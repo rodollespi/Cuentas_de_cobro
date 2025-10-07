@@ -19,7 +19,7 @@ Route::get('/register', [CrearUsuario::class, 'showRegistrationForm'])->name('re
 Route::post('/register', [CrearUsuario::class, 'register']);
 
 
-Route::view('/prueba', 'prueba');
+Route::view('/CuentasDeCobro', 'CuentasDeCobro');
 Route::view('prueba2', 'prueba2');
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
