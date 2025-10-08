@@ -197,7 +197,7 @@
             <p>Formulario oficial para la generación de cuentas de cobro</p>
         </header>
         
-        <form id="cuentaCobroForm" method="POST" action="{{'crearCuentaCobro.almacenar'}}">
+        <form id="cuentaCobroForm" method="POST" action="{{route('crearCuentaCobro.almacenar')}}">
             @csrf
             <div class="form-section">
                 <div class="section-title">Información de la Alcaldía</div>
@@ -346,7 +346,7 @@
             </div>
             
             <div class="button-group">
-                <button type="submit" value = "Create"class="btn btn-generar">Generar Cuenta de Cobro</button>
+                <button type="submit" value = "Create" class="btn btn-generar">Generar Cuenta de Cobro</button>
                 <button type="reset" class="btn btn-limpiar">Limpiar Formulario</button>
                 <a href="/dashboard"><button type="button" class="btn btn-limpiar">Volver</button>   </a>
             </div>

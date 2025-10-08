@@ -325,10 +325,7 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo-container">
-                <div class="logo">ALCALDÍA</div>
-            </div>
+        <header>    
             <h1>PANEL DE CUENTAS DE COBRO</h1>
             <p>Sistema de gestión de cuentas de cobro para la alcaldía</p>
         </header>
