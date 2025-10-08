@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CrearUsuario;
+use App\Http\Controllers\CrearCuentaCobroController;
 
 // Ruta raíz redirige al login
 Route::get('/', function () {
@@ -19,7 +20,10 @@ Route::get('/register', [CrearUsuario::class, 'showRegistrationForm'])->name('re
 Route::post('/register', [CrearUsuario::class, 'register']);
 
 
-Route::view('/CuentasDeCobro', 'CuentasDeCobro');
+//Route::view('/CuentasDeCobro', 'CuentasDeCobro');
+
+Route::get('/cuentasDeCobro',[CrearCuentaCobroController::class,'index'])->name('crearCuentaCobro.index');
+Route::post('CuentasDeCobro/almacenar',[CrearCuentaCobroController::class,'almacenar'])->name('crearCuentaCobro.almacenar');
 
 Route::view('prueba2', 'prueba2');
 // Rutas protegidas por autenticación

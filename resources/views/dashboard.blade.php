@@ -154,7 +154,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-4 mb-3">
-                                        <a href="/CuentasDeCobro" class="btn btn-primary btn-lg w-100">
+                                        <a href="{{Route('crearCuentaCobro.index')}}" class="btn btn-primary btn-lg w-100">
                                             <i class="fas fa-plus-circle me-2"></i>
                                             Nueva Cuenta de Cobro
                                         </a>
@@ -162,7 +162,7 @@
                                     <div class="col-md-4 mb-3">
                                         <a href="#" class="btn btn-outline-primary btn-lg w-100">
                                             <i class="fas fa-user-plus me-2"></i>
-                                            ver cuentas s
+                                            ver cuentas 
                                         </a>
                                     </div>
                                     <div class="col-md-4 mb-3">

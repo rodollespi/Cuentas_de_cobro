@@ -193,14 +193,12 @@
 <body>
     <div class="container">
         <header>
-            <div class="logo-container">
-                <div class="logo">ALCALDÍA</div>
-            </div>
             <h1>CUENTA DE COBRO</h1>
             <p>Formulario oficial para la generación de cuentas de cobro</p>
         </header>
         
-        <form id="cuentaCobroForm">
+        <form id="cuentaCobroForm" method="POST" action="{{'crearCuentaCobro.almacenar'}}">
+            @csrf
             <div class="form-section">
                 <div class="section-title">Información de la Alcaldía</div>
                 <div class="form-row">
@@ -236,7 +234,7 @@
             </div>
             
             <div class="form-section">
-                <div class="section-title">Información del Beneficiario</div>
+                <div class="section-title">Información del Contratista</div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="tipoDocumento">Tipo de Documento</label>
@@ -348,8 +346,9 @@
             </div>
             
             <div class="button-group">
-                <button type="button" id="generarPDF" class="btn btn-generar">Generar Cuenta de Cobro</button>
+                <button type="submit" value = "Create"class="btn btn-generar">Generar Cuenta de Cobro</button>
                 <button type="reset" class="btn btn-limpiar">Limpiar Formulario</button>
+                <a href="/dashboard"><button type="button" class="btn btn-limpiar">Volver</button>   </a>
             </div>
         </form>
         
@@ -423,6 +422,6 @@
         
         });
     </script>
-    <a href="/dashboard">black</a>
+    
 </body>
 </html>
