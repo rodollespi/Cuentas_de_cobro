@@ -21,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id',
+        'role_id', // Asegurarse de que esté en fillable
     ];
 
     /**
@@ -46,35 +46,44 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
     /**
-     * Get user role name
+     * Relación con roles - un usuario pertenece a un rol
      */
-    public function getRoleName()
+    public function role()
     {
-        return $this->role ? $this->role->name : 'Sin rol';
+        return $this->belongsTo(Roles::class, 'role_id', 'id');
     }
 
     /**
-     * Check if user is an admin (alcalde or ordenador del gasto)
+     * Verificar si el usuario tiene un rol específico
+     */
+    public function hasRole($roleName)
+    {
+        return $this->role && $this->role->name === $roleName;
+    }
+
+    /**
+     * Verificar si el usuario tiene alguno de los roles especificados
+     */
+    public function hasAnyRole($roles)
+    {
+        if (!$this->role) {
+            return false;
+        }
+        
+        if (is_string($roles)) {
+            $roles = explode(',', $roles);
+        }
+        
+        return in_array($this->role->name, $roles);
+    }
+
+    /**
+     * Verificar si el usuario es administrador
      */
     public function isAdmin()
     {
         return $this->hasAnyRole(['alcalde', 'ordenador_gasto']);
-    }
-
-    /**
-     * Check if user can approve payments
-     */
-    public function canApprovePayments()
-    {
-        return $this->hasAnyRole(['alcalde', 'ordenador_gasto', 'tesoreria']);
-    }
-
-    /**
-     * Check if user can manage contracts
-     */
-    public function canManageContracts()
-    {
-        return $this->hasAnyRole(['contratacion', 'alcalde']);
     }
 }

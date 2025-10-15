@@ -25,12 +25,11 @@ Route::post('/register', [CrearUsuario::class, 'register']);
 Route::get('/cuentasDeCobro',[CrearCuentaCobroController::class,'index'])->name('crearCuentaCobro.index');
 Route::post('CuentasDeCobro/almacenar',[CrearCuentaCobroController::class,'almacenar'])->name('crearCuentaCobro.almacenar');
 
-Route::view('prueba2', 'prueba2');
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 });
-
+Route::view('/prueba3','roles.dashboard');
 
 
 Route::get('/crearCuentaCobro', function () {
