@@ -29,7 +29,7 @@
 }
 
 .sidebar {
-    background: #1a202c;
+    background: #1c57ceff;
     min-height: calc(100vh - 56px);
 }
 

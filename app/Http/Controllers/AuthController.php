@@ -6,28 +6,33 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Roles;
 
 class AuthController extends Controller
 {
-    // Mostrar formulario de login
+    /**
+     * Mostrar el formulario de login
+     */
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    // Procesar el login
+    /**
+     * Procesar el login
+     */
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            
+            return redirect()->intended('/dashboard')
+                ->with('success', 'Has iniciado sesión exitosamente.');
         }
 
         return back()->withErrors([
@@ -35,19 +40,93 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    // Mostrar dashboard/menú principal
-    public function dashboard()
-    {
-        return view('dashboard');
-    }
-
-    // Procesar logout
+    /**
+     * Cerrar sesión
+     */
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        return redirect('/login')
+            ->with('success', 'Has cerrado sesión exitosamente.');
+    }
+
+    /**
+     * Mostrar el dashboard según el rol del usuario
+     */
+    public function dashboard()
+    {
+        $user = Auth::user();
         
-        return redirect('/login');
+        // Datos básicos para todos los usuarios
+        $dashboardData = [
+            'user' => $user,
+            'userRole' => $user->role ? $user->role->name : null,
+            'userRoleDescription' => $user->role ? $user->role->description : 'Sin rol asignado'
+        ];
+
+        // Datos específicos para el alcalde
+        if ($user->hasRole('alcalde')) {
+            $dashboardData = array_merge($dashboardData, [
+                'totalUsers' => User::count(),
+                'totalRoles' => Roles::count(),
+                'usersWithRoles' => User::whereNotNull('role_id')->count(),
+                'usersWithoutRoles' => User::whereNull('role_id')->count(),
+                'rolesStats' => Roles::withCount('users')->get(),
+                'recentUsers' => User::with('role')->latest()->limit(5)->get(),
+                'systemRoles' => ['contratista', 'supervisor', 'alcalde', 'ordenador_gasto', 'tesoreria', 'contratacion']
+            ]);
+        }
+
+        // Datos específicos para supervisor
+        if ($user->hasRole('supervisor')) {
+            $dashboardData = array_merge($dashboardData, [
+                'pendingReviews' => 0, // Aquí irían las cuentas de cobro pendientes
+                'approvedToday' => 0,
+                'rejectedToday' => 0
+            ]);
+        }
+
+        // Datos específicos para contratista
+        if ($user->hasRole('contratista')) {
+            $dashboardData = array_merge($dashboardData, [
+                'myCuentasCobro' => 0, // Aquí irían sus cuentas de cobro
+                'pendingApproval' => 0,
+                'approved' => 0,
+                'rejected' => 0
+            ]);
+        }
+
+        // Datos específicos para tesorería
+        if ($user->hasRole('tesoreria')) {
+            $dashboardData = array_merge($dashboardData, [
+                'pendingPayments' => 0,
+                'paymentsToday' => 0,
+                'totalPaid' => 0
+            ]);
+        }
+
+        // Datos específicos para ordenador del gasto
+        if ($user->hasRole('ordenador_gasto')) {
+            $dashboardData = array_merge($dashboardData, [
+                'pendingAuthorizations' => 0,
+                'authorizedToday' => 0,
+                'budgetStatus' => 0
+            ]);
+        }
+
+        // Datos específicos para contratación
+        if ($user->hasRole('contratacion')) {
+            $dashboardData = array_merge($dashboardData, [
+                'activeContracts' => 0,
+                'pendingContracts' => 0,
+                'totalContractors' => 0
+            ]);
+        }
+
+        return view('dashboard', $dashboardData);
     }
 }
