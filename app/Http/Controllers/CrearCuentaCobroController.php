@@ -83,9 +83,24 @@ class CrearCuentaCobroController extends Controller
     }
 
 
+public function subirDocumento(Request $request)
+{
+    $request->validate([
+        'documento_pdf' => 'required|file|mimes:pdf|max:5120', // Máx 5MB
+    ]);
 
+    // Guardar el archivo en storage/app/public/documentos_pdf
+    $pdfPath = $request->file('documento_pdf')->store('documentos_pdf', 'public');
 
- 
+    // Aquí puedes registrar el archivo en la base de datos si lo deseas
+    // Ejemplo:
+    // Documento::create([
+    //     'ruta' => $pdfPath,
+    //     'usuario_id' => auth()->id(),
+    // ]);
+
+    return redirect()->back()->with('success', 'Documento PDF subido correctamente.');
+}
     public function create()
     {
         //

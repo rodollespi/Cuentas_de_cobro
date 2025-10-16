@@ -35,3 +35,6 @@ Route::view('/prueba3','roles.dashboard');
 Route::get('/crearCuentaCobro', function () {
     return view('crearCuentaCobro');
 })->middleware('auth');
+
+Route::post('/cuenta-cobro/subir-pdf', [CrearCuentaCobroController::class, 'subirDocumento'])
+    ->name('cuentaCobro.subirDocumento');

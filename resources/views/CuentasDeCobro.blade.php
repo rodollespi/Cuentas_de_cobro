@@ -4,12 +4,213 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cuenta de Cobro - Alcaldía</title>
-    <style>
+
+            
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="logo-container">
+            <h1 class="text-formulario">CUENTA DE COBRO</h1>
+            <p>Formulario oficial para la generación de cuentas de cobro</p>
+            <div class="logo">
+                <img src="{{ asset('images/chia.png') }}" alt="Logo adicional" style="width: 550px; height: 100px;">
+            </div>
+        </header>
+        
+        <form id="cuentaCobroForm" method="POST" action="{{route('crearCuentaCobro.almacenar')}}">
+            @csrf
+            <div class="form-section">
+                <div class="section-title">Información de la Alcaldía</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombreAlcaldia">Nombre de la Alcaldía</label>
+                        <input type="text" id="nombreAlcaldia" name="nombreAlcaldia" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nitAlcaldia">NIT</label>
+                        <input type="text" id="nitAlcaldia" name="nitAlcaldia" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="direccionAlcaldia">Dirección</label>
+                        <input type="text" id="direccionAlcaldia" name="direccionAlcaldia" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefonoAlcaldia">Teléfono</label>
+                        <input type="tel" id="telefonoAlcaldia" name="telefonoAlcaldia" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ciudadAlcaldia">Ciudad/Municipio</label>
+                        <input type="text" id="ciudadAlcaldia" name="ciudadAlcaldia" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaEmision">Fecha de Emisión</label>
+                        <input type="date" id="fechaEmision" name="fechaEmision" required>
+                    </div>
+                </div>
+            </div>
+            <!-- Sección de Información del Contratista -->
+            <div class="form-section"> 
+                <div class="section-title">Información del Contratista</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tipoDocumento">Tipo de Documento</label>
+                        <select id="tipoDocumento" name="tipoDocumento" required>
+                            <option value="">Seleccione...</option>
+                            <option value="cc">Cédula de Ciudadanía</option>
+                            <option value="ce">Cédula de Extranjería</option>
+                            <option value="nit">NIT</option>
+                            <option value="pasaporte">Pasaporte</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="numeroDocumento">Número de Documento</label>
+                        <input type="text" id="numeroDocumento" name="numeroDocumento" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombreBeneficiario">Nombre Completo</label>
+                        <input type="text" id="nombreBeneficiario" name="nombreBeneficiario" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefonoBeneficiario">Teléfono</label>
+                        <input type="tel" id="telefonoBeneficiario" name="telefonoBeneficiario">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="direccionBeneficiario">Dirección</label>
+                    <input type="text" id="direccionBeneficiario" name="direccionBeneficiario">
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <div class="section-title">Concepto del Pago</div>
+                <div class="form-group">
+                    <label for="concepto">Descripción del Servicio/Concepto</label>
+                    <textarea id="concepto" name="concepto" placeholder="Describa detalladamente el servicio prestado o concepto por el cual se genera la cuenta de cobro..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="periodo">Periodo Facturado</label>
+                    <input type="text" id="periodo" name="periodo" placeholder="Ej: Enero 2023" required>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <div class="section-title">Detalle de Valores</div>
+                <table id="tablaDetalle">
+                    <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Valor Unitario</th>
+                            <th>Valor Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" name="descripcion[]" placeholder="Descripción del ítem" required></td>
+                            <td><input type="number" name="cantidad[]" min="1" value="1" required></td>
+                            <td><input type="number" name="valorUnitario[]" min="0" step="0.01" placeholder="0.00" required></td>
+                            <td><input type="number" name="valorTotal[]" min="0" step="0.01" placeholder="0.00" readonly></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" id="agregarFila" class="btn" style="margin-top: 10px;">Agregar Ítem</button>
+                
+                <div class="form-row" style="margin-top: 20px;">
+                    <div class="form-group">
+                        <label for="subtotal">Subtotal</label>
+                        <input type="number" id="subtotal" name="subtotal" step="0.01" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="iva">IVA (19%)</label>
+                        <input type="number" id="iva" name="iva" step="0.01" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="total">Total a Pagar</label>
+                        <input type="number" id="total" name="total" step="0.01" readonly>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <div class="section-title">Información Bancaria</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="banco">Banco</label>
+                        <input type="text" id="banco" name="banco" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipoCuenta">Tipo de Cuenta</label>
+                        <select id="tipoCuenta" name="tipoCuenta" required>
+                            <option value="">Seleccione...</option>
+                            <option value="ahorros">Ahorros</option>
+                            <option value="corriente">Corriente</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="numeroCuenta">Número de Cuenta</label>
+                        <input type="text" id="numeroCuenta" name="numeroCuenta" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="titularCuenta">Titular de la Cuenta</label>
+                        <input type="text" id="titularCuenta" name="titularCuenta" required>
+                    </div>
+                </div>
+            </div>
+            <!-- Nueva sección para subir PDF -->
+              <div class="form-section"> 
+                <div class="section-title">Subir Documento PDF</div>
+                 <form action="{{ route('cuentaCobro.subirDocumento') }}" method="POST" enctype="multipart/form-data">
+                  @csrf
+                  <div class="form-group">
+                   <label for="documento_pdf">Seleccione el archivo PDF</label>
+                   <input type="file" name="documento_pdf" id="documento_pdf" accept="application/pdf" required>
+                   </div>
+            <button type="submit" class="btn btn-generar">Subir Documento</button>
+            </div>
+            <div class="form-group">
+                <label for="observaciones">Observaciones Adicionales</label>
+                <textarea id="observaciones" name="observaciones" placeholder="Ingrese cualquier observación adicional que considere relevante..."></textarea>
+            </div>
+            <div class="button-group">
+                <button type="submit" value = "Create" class="btn btn-generar">Generar Cuenta de Cobro</button>
+                <button type="reset" class="btn btn-limpiar">Limpiar Formulario</button>
+                <a href="/dashboard"><button type="button" class="btn btn-limpiar">Volver</button>   </a>
+                
+             </form>
+            </div>
+        </form> <!-- Cierre del formulario -->
+        <footer>
+            <p>© 2023 Alcaldía Municipal. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- stiles  -->
+     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            .logo-container {
+                display: flex;
+                justify-content: center;
+                
+                margin-bottom: 20px;
+                background-color: #2c3e50;
+                padding: 10px;
+                border-radius: 8px;
+            }
         }
         
         body {
@@ -28,18 +229,15 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
         
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #2c3e50;
-            padding-bottom: 20px;
-        }
+     
         
         h1 {
             color: #2c3e50;
             margin-bottom: 10px;
         }
-        
+        .text-formulario{
+            text-align: right;
+        }
         .logo-container {
             display: flex;
             justify-content: center;
@@ -189,174 +387,7 @@
             }
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>CUENTA DE COBRO</h1>
-            <p>Formulario oficial para la generación de cuentas de cobro</p>
-        </header>
-        
-        <form id="cuentaCobroForm" method="POST" action="{{route('crearCuentaCobro.almacenar')}}">
-            @csrf
-            <div class="form-section">
-                <div class="section-title">Información de la Alcaldía</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="nombreAlcaldia">Nombre de la Alcaldía</label>
-                        <input type="text" id="nombreAlcaldia" name="nombreAlcaldia" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="nitAlcaldia">NIT</label>
-                        <input type="text" id="nitAlcaldia" name="nitAlcaldia" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="direccionAlcaldia">Dirección</label>
-                        <input type="text" id="direccionAlcaldia" name="direccionAlcaldia" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="telefonoAlcaldia">Teléfono</label>
-                        <input type="tel" id="telefonoAlcaldia" name="telefonoAlcaldia" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="ciudadAlcaldia">Ciudad/Municipio</label>
-                        <input type="text" id="ciudadAlcaldia" name="ciudadAlcaldia" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="fechaEmision">Fecha de Emisión</label>
-                        <input type="date" id="fechaEmision" name="fechaEmision" required>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-section">
-                <div class="section-title">Información del Contratista</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="tipoDocumento">Tipo de Documento</label>
-                        <select id="tipoDocumento" name="tipoDocumento" required>
-                            <option value="">Seleccione...</option>
-                            <option value="cc">Cédula de Ciudadanía</option>
-                            <option value="ce">Cédula de Extranjería</option>
-                            <option value="nit">NIT</option>
-                            <option value="pasaporte">Pasaporte</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="numeroDocumento">Número de Documento</label>
-                        <input type="text" id="numeroDocumento" name="numeroDocumento" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="nombreBeneficiario">Nombre Completo</label>
-                        <input type="text" id="nombreBeneficiario" name="nombreBeneficiario" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="telefonoBeneficiario">Teléfono</label>
-                        <input type="tel" id="telefonoBeneficiario" name="telefonoBeneficiario">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="direccionBeneficiario">Dirección</label>
-                    <input type="text" id="direccionBeneficiario" name="direccionBeneficiario">
-                </div>
-            </div>
-            
-            <div class="form-section">
-                <div class="section-title">Concepto del Pago</div>
-                <div class="form-group">
-                    <label for="concepto">Descripción del Servicio/Concepto</label>
-                    <textarea id="concepto" name="concepto" placeholder="Describa detalladamente el servicio prestado o concepto por el cual se genera la cuenta de cobro..." required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="periodo">Periodo Facturado</label>
-                    <input type="text" id="periodo" name="periodo" placeholder="Ej: Enero 2023" required>
-                </div>
-            </div>
-            
-            <div class="form-section">
-                <div class="section-title">Detalle de Valores</div>
-                <table id="tablaDetalle">
-                    <thead>
-                        <tr>
-                            <th>Descripción</th>
-                            <th>Cantidad</th>
-                            <th>Valor Unitario</th>
-                            <th>Valor Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="text" name="descripcion[]" placeholder="Descripción del ítem" required></td>
-                            <td><input type="number" name="cantidad[]" min="1" value="1" required></td>
-                            <td><input type="number" name="valorUnitario[]" min="0" step="0.01" placeholder="0.00" required></td>
-                            <td><input type="number" name="valorTotal[]" min="0" step="0.01" placeholder="0.00" readonly></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="button" id="agregarFila" class="btn" style="margin-top: 10px;">Agregar Ítem</button>
-                
-                <div class="form-row" style="margin-top: 20px;">
-                    <div class="form-group">
-                        <label for="subtotal">Subtotal</label>
-                        <input type="number" id="subtotal" name="subtotal" step="0.01" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="iva">IVA (19%)</label>
-                        <input type="number" id="iva" name="iva" step="0.01" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="total">Total a Pagar</label>
-                        <input type="number" id="total" name="total" step="0.01" readonly>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-section">
-                <div class="section-title">Información Bancaria</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="banco">Banco</label>
-                        <input type="text" id="banco" name="banco" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tipoCuenta">Tipo de Cuenta</label>
-                        <select id="tipoCuenta" name="tipoCuenta" required>
-                            <option value="">Seleccione...</option>
-                            <option value="ahorros">Ahorros</option>
-                            <option value="corriente">Corriente</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="numeroCuenta">Número de Cuenta</label>
-                        <input type="text" id="numeroCuenta" name="numeroCuenta" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="titularCuenta">Titular de la Cuenta</label>
-                        <input type="text" id="titularCuenta" name="titularCuenta" required>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="button-group">
-                <button type="submit" value = "Create" class="btn btn-generar">Generar Cuenta de Cobro</button>
-                <button type="reset" class="btn btn-limpiar">Limpiar Formulario</button>
-                <a href="/dashboard"><button type="button" class="btn btn-limpiar">Volver</button>   </a>
-            </div>
-        </form>
-        
-        <footer>
-            <p>© 2023 Alcaldía Municipal. Todos los derechos reservados.</p>
-        </footer>
-    </div>
-
+    <!-- Bootstrap JS -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Establecer fecha actual como fecha de emisión
