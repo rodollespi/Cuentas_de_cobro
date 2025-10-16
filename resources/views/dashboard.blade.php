@@ -3,206 +3,302 @@
 @section('title', 'Dashboard - CuentasCobro')
 
 @section('content')
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ route('dashboard') }}">
-            <i class="fas fa-file-invoice-dollar me-2"></i>CuentasCobro
-        </a>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user me-1"></i>{{ Auth::user()->name }}
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-user-cog me-1"></i>Perfil
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-cog me-1"></i>Configuración
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('logout') }}" 
-                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2 p-0">
-            <div class="sidebar">
-                <div class="p-3">
-                    <h6 class="text-white-50 text-uppercase">Menú Principal</h6>
+        <!-- Header del Dashboard -->
+        <div class="col-12 mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0 text-gray-800">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Dashboard
+                    </h1>
+                    <p class="text-muted mb-0">
+                        Bienvenido, <strong>{{ $user->name }}</strong>
+                        @if($userRole)
+                        - <span class="badge bg-primary">{{ ucfirst(str_replace('_', ' ', $userRole)) }}</span>
+                        @endif
+                    </p>
                 </div>
-                <nav class="nav flex-column px-3">
-                    <a class="nav-link active" href="{{ route('dashboard') }}">
-                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                    </a>
-                    <a class="nav-link" href="/prueba2">
-                        <i class="fas fa-file-invoice me-2"></i>Cuentas de Cobro
-                    </a>
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-plus-circle me-2"></i>Nueva Cuenta
-                    </a>
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-users me-2"></i>Clientes
-                    </a>
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-chart-bar me-2"></i>Reportes
-                    </a>
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-cog me-2"></i>Configuración
-                    </a>
-                </nav>
+                <div class="text-end">
+                    <small class="text-muted">
+                        <i class="fas fa-calendar me-1"></i>
+                        {{ now()->format('d/m/Y H:i') }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if($userRole === 'alcalde')
+    <!-- Dashboard para Alcalde -->
+    <div class="row">
+        <!-- Estadísticas Generales -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Usuarios
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalUsers ?? 0 }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="col-md-9 col-lg-10">
-            <div class="main-content p-4">
-                <!-- Welcome Section -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <h1 class="h3 text-dark">¡Bienvenido, {{ Auth::user()->name }}!</h1>
-                        <p class="text-muted">Gestiona tus cuentas de cobro de manera eficiente</p>
-                    </div>
-                </div>
-
-                <!-- Statistics Cards -->
-                <div class="row mb-4">
-                    <div class="col-md-3 mb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="text-primary mb-2">
-                                    <i class="fas fa-file-invoice fa-2x"></i>
-                                </div>
-                                <h5 class="card-title">Total Cuentas</h5>
-                                <h3 class="text-primary">0</h3>
-                                <small class="text-muted">Cuentas registradas</small>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Usuarios con Rol
                             </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $usersWithRoles ?? 0 }}</div>
                         </div>
-                    </div>
-                    
-                    <div class="col-md-3 mb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="text-success mb-2">
-                                    <i class="fas fa-check-circle fa-2x"></i>
-                                </div>
-                                <h5 class="card-title">Pagadas</h5>
-                                <h3 class="text-success">0</h3>
-                                <small class="text-muted">Cuentas pagadas</small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3 mb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="text-warning mb-2">
-                                    <i class="fas fa-clock fa-2x"></i>
-                                </div>
-                                <h5 class="card-title">Pendientes</h5>
-                                <h3 class="text-warning">0</h3>
-                                <small class="text-muted">Por cobrar</small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3 mb-3">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="text-info mb-2">
-                                    <i class="fas fa-dollar-sign fa-2x"></i>
-                                </div>
-                                <h5 class="card-title">Total Facturado</h5>
-                                <h3 class="text-info">$0</h3>
-                                <small class="text-muted">Este mes</small>
-                            </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-check fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Quick Actions -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-white">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-rocket me-2"></i>Acciones Rápidas
-                                </h5>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total Roles
                             </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-4 mb-3">
-                                        <a href="{{Route('crearCuentaCobro.index')}}" class="btn btn-primary btn-lg w-100">
-                                            <i class="fas fa-plus-circle me-2"></i>
-                                            Nueva Cuenta de Cobro
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <a href="#" class="btn btn-outline-primary btn-lg w-100">
-                                            <i class="fas fa-user-plus me-2"></i>
-                                            ver cuentas 
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <a href="#" class="btn btn-outline-primary btn-lg w-100">
-                                            <i class="fas fa-chart-line me-2"></i>
-                                            Ver Reportes
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalRoles ?? 0 }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users-cog fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Recent Activity -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-white">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-history me-2"></i>Actividad Reciente
-                                </h5>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Sin Rol Asignado
                             </div>
-                            <div class="card-body">
-                                <div class="text-center py-4">
-                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                    <p class="text-muted">No hay actividad reciente para mostrar.</p>
-                                    <p class="text-muted">¡Comienza creando tu primera cuenta de cobro!</p>
-                                </div>
-                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $usersWithoutRoles ?? 0 }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-times fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Acciones Rápidas para Alcalde -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-users-cog me-2"></i>
+                        Gestión de Roles
+                    </h6>
+                    <a href="{{ route('roles.index'); }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-eye me-1"></i>
+                        Ver Todos
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <a href="{{ route('roles.index') }}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-list me-2"></i>
+                                Ver Roles
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="{{ route('roles.create') }}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-plus me-2"></i>
+                                Crear Rol
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Resumen de roles del sistema -->
+                    <div class="mt-3">
+                        <h6 class="text-muted">Roles del Sistema:</h6>
+                        <div class="row">
+                            @if(isset($systemRoles) && isset($rolesStats))
+                            @foreach($systemRoles as $role)
+                            @php
+                            $roleData = $rolesStats->where('name', $role)->first();
+                            @endphp
+                            <div class="col-6 mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-capitalize">{{ str_replace('_', ' ', $role) }}:</span>
+                                    <span class="badge bg-secondary">
+                                        {{ $roleData ? $roleData->users_count : 0 }}
+                                    </span>
+                                </div>
+                            </div>
+                            @endforeach
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-users me-2"></i>
+                        Usuarios Recientes
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if(isset($recentUsers) && $recentUsers->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <tbody>
+                                @foreach($recentUsers as $recentUser)
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-user text-primary me-2"></i>
+                                        <strong>{{ $recentUser->name }}</strong>
+                                    </td>
+                                    <td>
+                                        @if($recentUser->role)
+                                        <span class="badge bg-success">{{ $recentUser->role->name }}</span>
+                                        @else
+                                        <span class="badge bg-secondary">Sin rol</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ $recentUser->created_at->diffForHumans() }}</small>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @else
+                    <p class="text-muted text-center">No hay usuarios registrados recientemente.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if($userRole === 'supervisor')
+    <!-- Dashboard para Supervisor -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-user-check fa-4x text-success mb-3"></i>
+                    <h4>Panel de Supervisor</h4>
+                    <p class="text-muted">Aquí podrás revisar y aprobar cuentas de cobro.</p>
+                    <p class="text-muted">Esta funcionalidad se implementará próximamente.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if($userRole === 'contratista')
+    <!-- Dashboard para Contratista -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-user-tie fa-4x text-primary mb-3"></i>
+                    <h4>Panel de Contratista</h4>
+                    <p class="text-muted">Aquí podrás crear y gestionar tus cuentas de cobro.</p>
+                    <p class="text-muted">Esta funcionalidad se implementará próximamente.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if(!$userRole)
+    <!-- Usuario sin rol asignado -->
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Sin rol asignado
+                </h4>
+                <p>No tienes un rol asignado en el sistema. Contacta al administrador para que te asigne un rol.</p>
+                <hr>
+                <p class="mb-0">Mientras tanto, puedes explorar las funcionalidades básicas del sistema.</p>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if(in_array($userRole, ['ordenador_gasto', 'tesoreria', 'contratacion']))
+    <!-- Dashboard para otros roles -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body text-center py-5">
+                    @switch($userRole)
+                        @case('ordenador_gasto')
+                            <i class="fas fa-money-check-alt fa-4x text-info mb-3"></i>
+                            <h4>Panel de Ordenador del Gasto</h4>
+                            <p class="text-muted">Aquí podrás autorizar pagos y gestionar presupuestos.</p>
+                            @break
+                        @case('tesoreria')
+                            <i class="fas fa-coins fa-4x text-success mb-3"></i>
+                            <h4>Panel de Tesorería</h4>
+                            <p class="text-muted">Aquí podrás procesar pagos y generar reportes financieros.</p>
+                            @break
+                        @case('contratacion')
+                            <i class="fas fa-handshake fa-4x text-primary mb-3"></i>
+                            <h4>Panel de Contratación</h4>
+                            <p class="text-muted">Aquí podrás gestionar contratos y contratistas.</p>
+                            @break
+                    @endswitch
+                    <p class="text-muted">Esta funcionalidad se implementará próximamente.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
-<!-- Logout Form -->
-<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-    @csrf
-</form>
+@push('styles')
+<style>
+    .border-left-primary {
+        border-left: 0.25rem solid #4e73df !important;
+    }
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+</style>
+@endpush
 @endsection

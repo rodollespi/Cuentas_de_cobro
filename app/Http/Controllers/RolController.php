@@ -7,8 +7,10 @@ use App\Models\Roles;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Controller;
 
-class RolControler extends Controller
+
+class RolController extends Controller
 {
     /**
      * Constructor - Middleware de autenticación
