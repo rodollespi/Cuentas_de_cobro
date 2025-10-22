@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,        // Primero los roles
             AdminUserSeeder::class,   // Luego el usuario administrador
+            CuentasCobroSeeder::class, // Finalmente las cuentas de cobro
+            
         ]);
     }
 }

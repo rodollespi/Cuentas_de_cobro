@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CrearUsuario;
 use App\Http\Controllers\RolController;
+use App\Http\Controllers\FtpController;
+use App\Http\Controllers\CrearCuentaCobroController;
+use App\Http\Controllers\CuentaCobroController;
+
 
 // Ruta raíz redirige al login
 Route::get('/', function () {
@@ -18,6 +22,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rutas Crear usuarios
 Route::get('/register', [CrearUsuario::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [CrearUsuario::class, 'register']);
+
+// Logout
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
@@ -70,17 +77,31 @@ Route::middleware(['auth'])->group(function () {
         })->name('settings');
     });
 });
+Route::get('/ftp/subir', [FtpController::class, 'subirArchivo']);
+Route::get('/ftp/listar', [FtpController::class, 'listarArchivos']);
+Route::get('/ftp/leer', [FtpController::class, 'leerArchivo']);
 
 // Rutas que requieren roles específicos (ejemplos para futuro uso)
 Route::middleware(['auth'])->group(function () {
     
-    // Solo para contratistas
-    Route::middleware(['check.role:contratista'])->prefix('contratista')->name('contratista.')->group(function () {
-        Route::get('/dashboard', function() {
-            return view('contratista.dashboard');
-        })->name('dashboard');
-    });
+    // ============================================
+    // RUTAS PARA CONTRATISTA - CUENTAS DE COBRO
+    // ============================================
+    Route::middleware(['check.role:contratista'])->group(function () {
+    // Resource route con nombres explícitos
+    Route::resource('cuentas-cobro', CrearCuentaCobroController::class)->names([
+        'index' => 'cuentas-cobro.index',
+        'create' => 'cuentas-cobro.create', 
+        'store' => 'cuentas-cobro.store',
+        'show' => 'cuentas-cobro.show',
+        'edit' => 'cuentas-cobro.edit',
+        'update' => 'cuentas-cobro.update',
+        'destroy' => 'cuentas-cobro.destroy'
+    ]);
     
+    Route::get('cuentas-cobro/{cuentasCobro}/descargar/{tipo}', [CrearCuentaCobroController::class, 'descargarDocumento'])
+        ->name('cuentas-cobro.descargar');
+});
     // Solo para supervisores
     Route::middleware(['check.role:supervisor'])->prefix('supervisor')->name('supervisor.')->group(function () {
         Route::get('/dashboard', function() {

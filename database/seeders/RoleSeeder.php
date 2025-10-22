@@ -1,17 +1,19 @@
 <?php
+
 namespace Database\Seeders;
 
+use App\Models\Roles;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Role;
+use Illuminate\Routing\RouteFileRegistrar;
+
 
 class RoleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
+        // Crear otros roles
         $roles = [
             [
                 'name' => 'contratista',
@@ -87,7 +89,7 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($roles as $roleData) {
-            Role::firstOrCreate(
+            Roles::firstOrCreate(  
                 ['name' => $roleData['name']],
                 [
                     'description' => $roleData['description'],
@@ -96,6 +98,6 @@ class RoleSeeder extends Seeder
             );
         }
 
-        $this->command->info('Roles creados exitosamente.');
+        $this->command->info('✅ Roles creados exitosamente.');
     }
 }

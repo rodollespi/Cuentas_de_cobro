@@ -9,12 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('cuentas_cobro', function (Blueprint $table) {
+        Schema::create('crear_cuenta_cobros', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             
-            // Información de la Alcaldía
+            // Datos de la alcaldía
             $table->string('nombre_alcaldia');
             $table->string('nit_alcaldia');
             $table->string('direccion_alcaldia');
@@ -22,43 +23,40 @@ return new class extends Migration
             $table->string('ciudad_alcaldia');
             $table->date('fecha_emision');
             
-            // Información del Contratista
+            // Datos del beneficiario
             $table->string('tipo_documento');
             $table->string('numero_documento');
             $table->string('nombre_beneficiario');
             $table->string('telefono_beneficiario')->nullable();
             $table->string('direccion_beneficiario')->nullable();
             
-            // Concepto del Pago
+            // Datos de la cuenta de cobro
             $table->text('concepto');
             $table->string('periodo');
-            
-            // Detalle de Valores (guardado como JSON)
-            $table->json('detalle_items');
-            
-            // Totales
+            $table->json('detalle_items')->nullable();
             $table->decimal('subtotal', 15, 2);
             $table->decimal('iva', 15, 2);
             $table->decimal('total', 15, 2);
             
-            // Información Bancaria
+            // Datos bancarios
             $table->string('banco');
             $table->string('tipo_cuenta');
             $table->string('numero_cuenta');
             $table->string('titular_cuenta');
             
+            // Estados y auditoría
+            $table->string('estado')->default('pendiente');
+            $table->text('observaciones')->nullable();
+            
             $table->timestamps();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('cuentas_cobro');
+        Schema::dropIfExists('crear_cuenta_cobros');
     }
-    
 };

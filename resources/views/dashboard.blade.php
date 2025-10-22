@@ -116,7 +116,7 @@
                         <i class="fas fa-users-cog me-2"></i>
                         Gestión de Roles
                     </h6>
-                    <a href="{{ route('roles.index'); }}" class="btn btn-primary btn-sm">
+                    <a href="{{ route('roles.index')}}" class="btn btn-primary btn-sm">
                         <i class="fas fa-eye me-1"></i>
                         Ver Todos
                     </a>

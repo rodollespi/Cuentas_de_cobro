@@ -60,6 +60,20 @@ return [
             'report' => false,
         ],
 
+        'ftp' => [
+            'driver' => 'ftp',
+            'host' => env('FTP_HOST', 'localhost'),
+            'username' => env('FTP_USERNAME', 'admin'),
+            'password' => env('FTP_PASSWORD','Cosita124*'),
+            'port' => (int)env('FTP_PORT', 21),
+            'root' => env('FTP_ROOT', ''),
+            'passive' => true,
+            'ssl' => false,
+            'timeout' => 30,
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*
@@ -76,5 +90,6 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
+
 
 ];

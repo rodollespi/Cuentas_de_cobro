@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Models\Role as Roles;
+use App\Models\Roles;
 use Illuminate\Support\Facades\Hash;
 
 class AdminUserSeeder extends Seeder
@@ -16,9 +16,9 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         // Buscar el rol de alcalde
-        $alcaldeRole = Roles::where('name', 'alcalde')->first();
+        $alcaldeRoles = Roles::where(column: 'name', operator: 'alcalde')->first();
         
-        if (!$alcaldeRole) {
+        if (!$alcaldeRoles) {
             $this->command->error('El rol de alcalde no existe. Ejecuta primero el RoleSeeder.');
             return;
         }
@@ -30,7 +30,7 @@ class AdminUserSeeder extends Seeder
                 'name' => 'Daniel Ramirez',
                 'email' => 'daniel00250@hotmail.com',
                 'password' => Hash::make('cosa1234'),
-                'role_id' => $alcaldeRole->id,
+                'role_id' => $alcaldeRoles->id,
                 'email_verified_at' => now(),
             ]
         );
@@ -45,8 +45,8 @@ class AdminUserSeeder extends Seeder
             $this->command->info('ℹ️  El usuario administrador ya existe.');
             
             // Actualizar el rol si es necesario
-            if ($admin->role_id !== $alcaldeRole->id) {
-                $admin->update(['role_id' => $alcaldeRole->id]);
+            if ($admin->role_id !== $alcaldeRoles->id) {
+                $admin->update(['role_id' => $alcaldeRoles->id]);
                 $this->command->info('✅ Rol actualizado a Alcalde.');
             }
         }
