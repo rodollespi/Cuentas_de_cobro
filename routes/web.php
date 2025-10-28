@@ -7,6 +7,7 @@ use App\Http\Controllers\RolController;
 use App\Http\Controllers\FtpController;
 use App\Http\Controllers\CrearCuentaCobroController;
 use App\Http\Controllers\CuentaCobroController;
+use App\Http\Controllers\SupervisorController;
 
 
 // Ruta raíz redirige al login
@@ -103,11 +104,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('cuentas-cobro.descargar');
 });
     // Solo para supervisores
-    Route::middleware(['check.role:supervisor'])->prefix('supervisor')->name('supervisor.')->group(function () {
-        Route::get('/dashboard', function() {
-            return view('supervisor.dashboard');
-        })->name('dashboard');
-    });
+    Route::middleware(['auth', 'check.role:supervisor'])->group(function () {
+    Route::get('/supervisor/dashboard', [SupervisorController::class, 'index'])->name('supervisor.dashboard');
+    Route::post('/supervisor/aprobar/{id}', [SupervisorController::class, 'aprobar'])->name('supervisor.aprobar');
+    Route::post('/supervisor/rechazar/{id}', [SupervisorController::class, 'rechazar'])->name('supervisor.rechazar');
+});
     
     // Solo para roles administrativos (alcalde, ordenador del gasto)
     Route::middleware(['check.role:alcalde,ordenador_gasto'])->prefix('admin')->name('admin.')->group(function () {
