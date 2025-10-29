@@ -255,11 +255,11 @@
                     <div class="form-group">
                         <label for="nombreBeneficiario">Nombre Completo</label>
                         <input type="text" id="nombreBeneficiario" name="nombreBeneficiario" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="telefonoBeneficiario">Teléfono</label>
-                        <input type="tel" id="telefonoBeneficiario" name="telefonoBeneficiario">
-                    </div>
+                    </div>                        
+                            <div class="form-group">
+                                <label for="telefonoBeneficiario">Teléfono</label>
+                                <input type="tel" id="telefonoBeneficiario" name="telefonoBeneficiario" required>
+                            </div>                           
                 </div>
                 <div class="form-group">
                     <label for="direccionBeneficiario">Dirección</label>
@@ -348,7 +348,7 @@
             <div class="button-group">
                 <button type="submit" value = "Create" class="btn btn-generar">Generar Cuenta de Cobro</button>
                 <button type="reset" class="btn btn-limpiar">Limpiar Formulario</button>
-                <a href="/dashboard"><button type="button" class="btn btn-limpiar">Volver</button>   </a>
+                <a href="/dashboard" class="btn btn-limpiar">Volver</a>
             </div>
         </form>
         

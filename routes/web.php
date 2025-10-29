@@ -105,10 +105,15 @@ Route::middleware(['auth'])->group(function () {
 });
     // Solo para supervisores
     Route::middleware(['auth', 'check.role:supervisor'])->group(function () {
-    Route::get('/supervisor/dashboard', [SupervisorController::class, 'index'])->name('supervisor.dashboard');
+    Route::get('/supervisor/dashboard', [SupervisorController::class, 'dashboard'])
+        ->name('supervisor.dashboard');
+
+    Route::get('/supervisor/cuenta/{id}/ver', [SupervisorController::class, 'ver'])->name('supervisor.ver');    
+    Route::get('/supervisor/revisar/{id}', [SupervisorController::class, 'revisar'])->name('supervisor.revisar');
     Route::post('/supervisor/aprobar/{id}', [SupervisorController::class, 'aprobar'])->name('supervisor.aprobar');
     Route::post('/supervisor/rechazar/{id}', [SupervisorController::class, 'rechazar'])->name('supervisor.rechazar');
 });
+
     
     // Solo para roles administrativos (alcalde, ordenador del gasto)
     Route::middleware(['check.role:alcalde,ordenador_gasto'])->prefix('admin')->name('admin.')->group(function () {

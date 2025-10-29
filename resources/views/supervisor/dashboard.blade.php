@@ -47,89 +47,47 @@
         </div>
     </div>
 
-    {{-- Contenedor principal con tabla y gráfico lado a lado --}}
+    {{-- Contenedor principal: Listados y gráfico --}}
     <div class="row">
-        {{-- Tabla de cuentas (lado izquierdo) --}}
-        <div class="col-lg-8 mb-4">
-            <div class="card h-100">
+        {{-- Listado de cuentas --}}
+        <div class="col-md-8">
+            {{-- Pendientes --}}
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">Listado de Cuentas de Cobro Pendientes</h5>
+                </div>
                 <div class="card-body">
-                    <h5 class="text-center mb-3">Listado de Cuentas de Cobro</h5>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Beneficiario</th>
-                                <th>Concepto</th>
-                                <th>Estado</th>
-                                <th>Fecha de Emisión</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($cuentas as $cuenta)
-                                <tr>
-                                    <td>{{ $cuenta->id }}</td>
-                                    <td>{{ $cuenta->nombre_beneficiario }}</td>
-                                    <td>{{ $cuenta->concepto }}</td>
-                                    <td>
-                                        <span class="badge 
-                                            @if($cuenta->estado == 'pendiente') bg-warning
-                                            @elseif($cuenta->estado == 'aprobada') bg-success
-                                            @else bg-danger
-                                            @endif">
-                                            {{ ucfirst($cuenta->estado) }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $cuenta->fecha_emision->format('d/m/Y') }}</td>
-                                    <td>
-                                        @if($cuenta->estado === 'pendiente')
-                                            <form action="{{ route('supervisor.aprobar', $cuenta->id) }}" method="POST" style="display:inline;">
-                                                @csrf
-                                                <button class="btn btn-success btn-sm">Aprobar</button>
-                                            </form>
-                                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rechazoModal{{ $cuenta->id }}">Rechazar</button>
-                                        @else
-                                            <em>Sin acciones</em>
-                                        @endif
-                                    </td>
-                                </tr>
+                    @include('supervisor.partials.tabla', ['cuentas' => $cuentas->where("estado", "pendiente")])
+                </div>
+            </div>
 
-                                {{-- Modal de rechazo --}}
-                                <div class="modal fade" id="rechazoModal{{ $cuenta->id }}" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form action="{{ route('supervisor.rechazar', $cuenta->id) }}" method="POST">
-                                                @csrf
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Rechazar Cuenta #{{ $cuenta->id }}</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <label for="observaciones" class="form-label">Observaciones</label>
-                                                    <textarea name="observaciones" id="observaciones" class="form-control" rows="3" required></textarea>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-danger">Rechazar</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <tr><td colspan="6" class="text-center">No hay cuentas registradas.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+            {{-- Aprobadas --}}
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Listado de Cuentas de Cobro Aprobadas</h5>
+                </div>
+                <div class="card-body">
+                    @include('supervisor.partials.tabla', ['cuentas' => $cuentas->where("estado", "aprobada")])
+                </div>
+            </div>
+
+            {{-- Rechazadas --}}
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Listado de Cuentas de Cobro Rechazadas</h5>
+                </div>
+                <div class="card-body">
+                    @include('supervisor.partials.tabla', ['cuentas' => $cuentas->where("estado", "rechazada")])
                 </div>
             </div>
         </div>
 
-        {{-- Gráfico (lado derecho) --}}
-        <div class="col-lg-4 mb-4">
-            <div class="card h-100">
+        {{-- Gráfico --}}
+        <div class="col-md-4">
+            <div class="card">
                 <div class="card-body text-center">
                     <h5>Resumen Gráfico</h5>
-                    <canvas id="graficoCuentas" style="max-width: 100%; height: 250px;"></canvas>
+                    <canvas id="graficoCuentas" width="250" height="250"></canvas>
                 </div>
             </div>
         </div>
@@ -150,10 +108,7 @@ new Chart(ctx, {
         }]
     },
     options: {
-        responsive: true,
-        plugins: {
-            legend: { position: 'bottom' }
-        }
+        plugins: { legend: { position: 'bottom' } }
     }
 });
 </script>
