@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Roles;
+use App\Models\CrearCuentaCobro;
 
 class AuthController extends Controller
 {
@@ -84,9 +85,17 @@ class AuthController extends Controller
             'totalRoles' => Roles::count(),
             'usersWithRoles' => User::whereNotNull('role_id')->count(),
             'usersWithoutRoles' => User::whereNull('role_id')->count(),
+
             'rolesStats' => Roles::withCount('users')->get(),
             'recentUsers' => User::with('role')->latest()->limit(5)->get(),
-            'systemRoles' => ['contratista', 'supervisor', 'alcalde', 'ordenador_gasto', 'tesoreria', 'contratacion']
+            'systemRoles' => ['contratista', 'supervisor', 'alcalde', 'ordenador_gasto', 'tesoreria', 'contratacion'],
+
+                    //  ESTADÍSTICAS DE CUENTAS DE COBRO
+            'totalCuentasCobro' => CrearCuentaCobro::count(),
+            'cuentasPendientes' => CrearCuentaCobro::where('estado', 'pendiente')->count(),
+            'cuentasAprobadas' => CrearCuentaCobro::where('estado', 'aprobado')->count(),
+            'cuentasRechazadas' => CrearCuentaCobro::where('estado', 'rechazado')->count(),
+            'cuentasRecientes' => CrearCuentaCobro::with('user')->latest()->limit(5)->get(),
         ]);
     }
 

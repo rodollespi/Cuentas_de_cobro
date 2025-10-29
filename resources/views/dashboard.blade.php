@@ -107,6 +107,175 @@
         </div>
     </div>
 
+    <!--Estadísticas de Cuentas de Cobro -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-file-invoice-dollar me-2"></i>
+                    Cuentas de Cobro
+                </h6>
+                <a href="{{ route('alcalde.cuentas-cobro.index') }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye me-1"></i>
+                    Ver Todas
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Total Cuentas -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Total
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {{ $totalCuentasCobro ?? 0 }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-file-invoice fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pendientes -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                            Pendientes
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {{ $cuentasPendientes ?? 0 }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-clock fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aprobadas -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Aprobadas
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {{ $cuentasAprobadas ?? 0 }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rechazadas -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                            Rechazadas
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {{ $cuentasRechazadas ?? 0 }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Cuentas Recientes -->
+                @if(isset($cuentasRecientes) && $cuentasRecientes->count() > 0)
+                <div class="mt-3">
+                    <h6 class="font-weight-bold text-primary mb-3">Cuentas de Cobro Recientes</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Contratista</th>
+                                    <th>Período</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($cuentasRecientes as $cuenta)
+                                <tr>
+                                    <td><strong>#{{ $cuenta->id }}</strong></td>
+                                    <td>
+                                        <i class="fas fa-user text-primary me-1"></i>
+                                        {{ $cuenta->user ? $cuenta->user->name : 'N/A' }}
+                                    </td>
+                                    <td>{{ $cuenta->periodo }}</td>
+                                    <td><strong>${{ number_format($cuenta->total, 2) }}</strong></td>
+                                    <td>
+                                        @php
+                                            $badgeClass = match($cuenta->estado) {
+                                                'pendiente' => 'bg-warning',
+                                                'aprobado' => 'bg-success',
+                                                'rechazado' => 'bg-danger',
+                                                'finalizado' => 'bg-primary',
+                                                default => 'bg-secondary'
+                                            };
+                                        @endphp
+                                        <span class="badge {{ $badgeClass }}">
+                                            {{ ucfirst($cuenta->estado) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ $cuenta->created_at->format('d/m/Y') }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('alcalde.cuentas-cobro.show', $cuenta->id) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @else
+                <div class="text-center py-3">
+                    <p class="text-muted">No hay cuentas de cobro registradas.</p>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
     <!-- Acciones Rápidas para Alcalde -->
     <div class="row">
         <div class="col-lg-6 mb-4">

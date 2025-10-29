@@ -8,6 +8,7 @@ use App\Http\Controllers\FtpController;
 use App\Http\Controllers\CrearCuentaCobroController;
 use App\Http\Controllers\CuentaCobroController;
 use App\Http\Controllers\SupervisorController;
+use App\Http\Controllers\AlcaldeController;
 
 
 // Ruta raíz redirige al login
@@ -113,6 +114,24 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/supervisor/aprobar/{id}', [SupervisorController::class, 'aprobar'])->name('supervisor.aprobar');
     Route::post('/supervisor/rechazar/{id}', [SupervisorController::class, 'rechazar'])->name('supervisor.rechazar');
 });
+
+    // ============================================
+    // RUTAS PARA ALCALDE - CUENTAS DE COBRO
+    // ============================================
+
+    Route::middleware(['auth', 'check.role:alcalde'])->prefix('alcalde')->name('alcalde.')->group(function () {
+        // Dashboard del alcalde (opcional)
+        Route::get('/dashboard', function() {
+            return redirect()->route('alcalde.cuentas-cobro.index');
+        })->name('dashboard');
+        
+        // Gestión de cuentas de cobro
+        Route::get('/cuentas-cobro', [AlcaldeController::class, 'index'])->name('cuentas-cobro.index');
+        Route::get('/cuentas-cobro/{id}', [AlcaldeController::class, 'show'])->name('cuentas-cobro.show');
+        Route::post('/cuentas-cobro/{id}/aprobar', [AlcaldeController::class, 'aprobar'])->name('cuentas-cobro.aprobar');
+        Route::post('/cuentas-cobro/{id}/rechazar', [AlcaldeController::class, 'rechazar'])->name('cuentas-cobro.rechazar');
+        Route::post('/cuentas-cobro/{id}/finalizar', [AlcaldeController::class, 'finalizar'])->name('cuentas-cobro.finalizar');
+    });
 
     
     // Solo para roles administrativos (alcalde, ordenador del gasto)
