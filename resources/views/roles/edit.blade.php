@@ -208,7 +208,7 @@
                                             </div>
                                             <div class="d-flex justify-content-between">
                                                 <small class="text-muted">Total disponibles:</small>
-                                                <span class="badge bg-secondary">{{ count($availablePermissions) }}</span>
+                                                <span class="badge bg-secondary">{{ count($availablePermissions ?? []) }}</span>
                                             </div>
                                         </div>
                                     </div>
