@@ -141,3 +141,11 @@ Route::middleware(['auth'])->group(function () {
         })->name('reports');
     });
 });
+
+
+use App\Http\Controllers\OrdenadorController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/ordenador', [OrdenadorController::class, 'index'])
+        ->name('ordenador.dashboard');
+});
