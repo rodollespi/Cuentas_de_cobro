@@ -9,6 +9,7 @@ use App\Http\Controllers\CrearCuentaCobroController;
 use App\Http\Controllers\CuentaCobroController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\AlcaldeController;
+use App\Http\Controllers\OrdenadorController;
 
 
 // Ruta raíz redirige al login
@@ -140,12 +141,10 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.reports');
         })->name('reports');
     });
-});
-
-
-use App\Http\Controllers\OrdenadorController;
-
-Route::middleware(['auth'])->group(function () {
+    
+    Route::middleware(['auth'])->group(function () {
     Route::get('/ordenador', [OrdenadorController::class, 'index'])
         ->name('ordenador.dashboard');
+    });
 });
+
