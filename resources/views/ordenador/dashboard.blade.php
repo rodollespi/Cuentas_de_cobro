@@ -3,126 +3,55 @@
 @section('title', 'Panel del Ordenador del Gasto')
 
 @section('content')
-<div class="container">
-    <h2 class="mb-4">
-        <i class="fas fa-clipboard-list me-2"></i> Cuentas de Cobro Pendientes
-    </h2>
+<div class="container py-5">
 
-    @if($cuentas->isEmpty())
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            No hay cuentas pendientes por revisar.
+    <!-- Encabezado -->
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">
+            <i class="fas fa-money-check-alt me-2"></i> Panel del Ordenador del Gasto
+        </h2>
+        <p class="text-muted mb-0">
+            Aquí podrás revisar las cuentas de cobro que han sido aprobadas por Tesorería
+            y dar la autorización final para el pago.
+        </p>
+    </div>
+
+    <!-- Tarjeta de resumen -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
+            <div class="card text-center shadow border-0 rounded-4">
+                <div class="card-body py-4">
+                    <h5 class="card-title text-secondary mb-3">
+                        <i class="fas fa-clipboard-list fa-lg me-2"></i> Cuentas Pendientes
+                    </h5>
+                    <h2 class="fw-bold text-primary display-5 mb-2">0</h2>
+                    <p class="text-muted mb-0">No hay cuentas de cobro pendientes por aprobar.</p>
+                </div>
+            </div>
         </div>
-    @else
-        <div class="table-responsive shadow rounded">
-            <table class="table table-hover align-middle">
-                <thead class="table-primary">
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre Beneficiario</th>
-                        <th>Concepto</th>
-                        <th>Periodo</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($cuentas as $cuenta)
-                    <tr>
-                        <td>{{ $cuenta->id }}</td>
-                        <td>{{ $cuenta->nombre_beneficiario }}</td>
-                        <td>{{ Str::limit($cuenta->concepto, 40) }}</td>
-                        <td>{{ $cuenta->periodo }}</td>
-                        <td>${{ number_format($cuenta->total, 0, ',', '.') }}</td>
-                        <td>
-                            <span class="badge 
-                                @if($cuenta->estado == 'pendiente') bg-warning text-dark
-                                @elseif($cuenta->estado == 'Revisada') bg-info
-                                @else bg-secondary @endif">
-                                {{ ucfirst($cuenta->estado) }}
-                            </span>
-                        </td>
-                        <td>
-                            <a href="{{ route('ordenador.show', $cuenta->id) }}" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye"></i> Ver
-                            </a>
+    </div>
 
-                            <!-- Botón para modal de autorizar -->
-                            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAutorizar{{ $cuenta->id }}">
-                                <i class="fas fa-check"></i> Autorizar
-                            </button>
-
-                            <!-- Botón para modal de rechazar -->
-                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalRechazar{{ $cuenta->id }}">
-                                <i class="fas fa-times"></i> Rechazar
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- Modal Autorizar -->
-                    <div class="modal fade" id="modalAutorizar{{ $cuenta->id }}" tabindex="-1" aria-labelledby="modalAutorizarLabel{{ $cuenta->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header bg-success text-white">
-                                    <h5 class="modal-title" id="modalAutorizarLabel{{ $cuenta->id }}">
-                                        Confirmar autorización
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    ¿Estás seguro de que deseas <strong>autorizar</strong> la cuenta de cobro
-                                    <strong>#{{ $cuenta->id }}</strong> del beneficiario
-                                    <strong>{{ $cuenta->nombre_beneficiario }}</strong>?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <form action="{{ route('ordenador.autorizar', $cuenta->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success">Sí, autorizar</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal Rechazar -->
-                    <div class="modal fade" id="modalRechazar{{ $cuenta->id }}" tabindex="-1" aria-labelledby="modalRechazarLabel{{ $cuenta->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header bg-danger text-white">
-                                    <h5 class="modal-title" id="modalRechazarLabel{{ $cuenta->id }}">
-                                        Confirmar rechazo
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>¿Estás seguro de que deseas <strong>rechazar</strong> esta cuenta de cobro?</p>
-                                    <form action="{{ route('ordenador.rechazar', $cuenta->id) }}" method="POST" id="formRechazar{{ $cuenta->id }}">
-                                        @csrf
-                                        <div class="mb-3">
-                                            <label for="observaciones{{ $cuenta->id }}" class="form-label">Motivo del rechazo:</label>
-                                            <textarea name="observaciones" id="observaciones{{ $cuenta->id }}" class="form-control" rows="3" placeholder="Escribe una observación..."></textarea>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" form="formRechazar{{ $cuenta->id }}" class="btn btn-danger">
-                                        Sí, rechazar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @endforeach
-                </tbody>
-            </table>
+    <!-- Mensaje visual amigable -->
+    <div class="card shadow-sm border-0 rounded-4 mt-4">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+            <h4 class="fw-semibold text-dark">Todo está al día</h4>
+            <p class="text-muted mb-4">
+                En este momento, no tienes cuentas de cobro esperando tu aprobación final.
+                <br>
+                Cuando Tesorería finalice una revisión, aparecerá aquí automáticamente.
+            </p>
+            <a href="{{ route('dashboard') }}" class="btn btn-outline-primary px-4">
+                <i class="fas fa-home me-2"></i> Volver al inicio
+            </a>
         </div>
-    @endif
+    </div>
+
 </div>
 @endsection
+
+
+
 
 
 
