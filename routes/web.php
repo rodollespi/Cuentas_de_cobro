@@ -123,11 +123,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/cuentas-cobro/{id}/finalizar', [AlcaldeController::class, 'finalizar'])->name('cuentas-cobro.finalizar');
     });
 
-    // ============================================
-    // ORDENADOR DEL GASTO
-    // ============================================
-    Route::get('/ordenador', [OrdenadorController::class, 'index'])->name('ordenador.dashboard');
 
+    //---------------------
+    // ordenador gasto
+    //----------------
+   Route::middleware(['auth', 'check.role:ordenador_gasto'])->prefix('ordenador')->name('ordenador.')->group(function () {
+    Route::get('/dashboard', [OrdenadorController::class, 'index'])->name('dashboard');
+    Route::get('/cuenta/{id}', [OrdenadorController::class, 'show'])->name('ordenador.show');
+    Route::post('/cuenta/{id}/autorizar', [OrdenadorController::class, 'autorizar'])->name('autorizar');
+    Route::post('/cuenta/{id}/rechazar', [OrdenadorController::class, 'rechazar'])->name('rechazar');
+   });
+
+
+    
     // ============================================
     // PERFIL Y CONFIGURACIÓN
     // ============================================
@@ -137,6 +145,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
     Route::post('/configuracion/guardar', [ConfiguracionController::class, 'save'])->name('configuracion.save');
 });
+
 
 
 
