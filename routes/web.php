@@ -132,7 +132,7 @@ Route::middleware(['auth'])->group(function () {
     ->name('ordenador.')
     ->group(function () {
         Route::get('/dashboard', [OrdenadorController::class, 'index'])->name('dashboard');
-        Route::get('/cuenta/{id}', [OrdenadorController::class, 'show'])->name('ordenador.show');
+        Route::get('/cuenta/{id}', [OrdenadorController::class, 'show'])->name('show');
         Route::post('/cuenta/{id}/autorizar', [OrdenadorController::class, 'autorizar'])->name('autorizar');
         Route::post('/cuenta/{id}/rechazar', [OrdenadorController::class, 'rechazar'])->name('rechazar');
 });
