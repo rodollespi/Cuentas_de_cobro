@@ -12,6 +12,7 @@ use App\Http\Controllers\AlcaldeController;
 use App\Http\Controllers\OrdenadorController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\TesoreriaController;
 
 // ============================================
 // RUTA RAÍZ
@@ -128,6 +129,55 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     Route::get('/ordenador', [OrdenadorController::class, 'index'])->name('ordenador.dashboard');
 
+    //============TESORERIA==================
+
+    Route::middleware(['auth'])->group(function () {
+    
+    // Dashboard de Tesorería
+    Route::get('/tesoreria/dashboard', [TesoreriaController::class, 'index'])
+        ->name('tesoreria.dashboard');
+    
+    // Cuentas de Cobro - Vista
+    Route::get('/tesoreria/cuentas-cobro', [TesoreriaController::class, 'cuentasCobro'])
+        ->name('tesoreria.cuentas-cobro.index');
+    
+    Route::get('/tesoreria/cuentas-cobro/{id}', [TesoreriaController::class, 'verCuentaCobro'])
+        ->name('tesoreria.cuentas-cobro.show');
+    
+    // Procesar Pagos
+    Route::post('/tesoreria/pagos/cheque', [TesoreriaController::class, 'generarCheque'])
+        ->name('tesoreria.pagos.cheque');
+    
+    Route::post('/tesoreria/pagos/transferencia', [TesoreriaController::class, 'procesarTransferencia'])
+        ->name('tesoreria.pagos.transferencia');
+    
+    Route::post('/tesoreria/pagos/confirmar', [TesoreriaController::class, 'confirmarPago'])
+        ->name('tesoreria.pagos.confirmar');
+    
+    Route::post('/tesoreria/pagos/masivo', [TesoreriaController::class, 'pagoMasivo'])
+        ->name('tesoreria.pagos.masivo');
+    
+    // Historial de Pagos
+    Route::get('/tesoreria/historial', [TesoreriaController::class, 'historial'])
+        ->name('tesoreria.historial');
+    
+    // Reportes
+    Route::get('/tesoreria/reportes', [TesoreriaController::class, 'reportes'])
+        ->name('tesoreria.reportes');
+    
+    Route::post('/tesoreria/reportes/generar', [TesoreriaController::class, 'generarReporte'])
+        ->name('tesoreria.reportes.generar');
+    
+    Route::get('/tesoreria/reportes/descargar/{tipo}', [TesoreriaController::class, 'descargarReporte'])
+        ->name('tesoreria.reportes.descargar');
+    
+    // Comprobantes
+    Route::get('/tesoreria/comprobante/{id}', [TesoreriaController::class, 'verComprobante'])
+        ->name('tesoreria.comprobante');
+    
+    Route::get('/tesoreria/comprobante/{id}/descargar', [TesoreriaController::class, 'descargarComprobante'])
+        ->name('tesoreria.comprobante.descargar');
+});
     // ============================================
     // PERFIL Y CONFIGURACIÓN
     // ============================================
