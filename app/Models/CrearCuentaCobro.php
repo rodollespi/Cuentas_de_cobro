@@ -11,7 +11,6 @@ class CrearCuentaCobro extends Model
 
     protected $table = 'crear_cuenta_cobros';
 
-    // 🔹 Campos que se pueden llenar en masa
     protected $fillable = [
         'user_id',
         'nombre_alcaldia',
@@ -35,15 +34,12 @@ class CrearCuentaCobro extends Model
         'tipo_cuenta',
         'numero_cuenta',
         'titular_cuenta',
-
-        // Campos de control de flujo
-        'estado',         // pendiente, aprobado, rechazado, finalizado
-        'observaciones',  // observaciones del supervisor o alcalde
-        'supervisor_id',  // quién revisó la cuenta
-        'fecha_revision', // cuándo la revisó
+        'estado',
+        'observaciones',
+        'supervisor_id',
+        'fecha_revision',
     ];
 
-    // 
     protected $casts = [
         'detalle_items' => 'array',
         'fecha_emision' => 'date',
@@ -53,19 +49,64 @@ class CrearCuentaCobro extends Model
         'total' => 'decimal:2',
     ];
 
-    // 🔹 Relaciones
+    // ✅ AGREGAR ESTOS MÉTODOS
+    /**
+     * Obtener detalle_items siempre como array
+     */
+    public function getDetalleItemsAttribute($value)
+    {
+        // Si es null, retornar array vacío
+        if (is_null($value)) {
+            return [];
+        }
+
+        // Si ya es array, retornarlo
+        if (is_array($value)) {
+            return $value;
+        }
+
+        // Si es string JSON, decodificarlo
+        $decoded = json_decode($value, true);
+        
+        // Retornar array decodificado o array vacío si falla
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    /**
+     * Guardar detalle_items como JSON
+     */
+    public function setDetalleItemsAttribute($value)
+    {
+        if (is_null($value)) {
+            $this->attributes['detalle_items'] = null;
+            return;
+        }
+
+        if (is_array($value)) {
+            $this->attributes['detalle_items'] = json_encode($value);
+            return;
+        }
+
+        $this->attributes['detalle_items'] = $value;
+    }
+
+    // Relaciones
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // 🔹 Relación con supervisor (usuario con rol de supervisor)
     public function supervisor()
     {
         return $this->belongsTo(User::class, 'supervisor_id');
     }
 
-    // 🔹 Scopes para filtrar fácilmente en controladores
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class, 'cuenta_cobro_id');
+    }
+
+    // Scopes
     public function scopePendientes($query)
     {
         return $query->where('estado', 'pendiente');
