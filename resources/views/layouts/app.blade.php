@@ -179,14 +179,42 @@
                         </li>
                         @endif
                         
-                        @if(auth()->user()->role && in_array(auth()->user()->role->name, ['contratista', 'supervisor', 'ordenador_gasto']))
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fas fa-file-invoice me-1"></i>
-                                Cuentas de Cobro
-                            </a>
-                        </li>
-                        @endif
+                     @if(auth()->user()->role)
+    @if(auth()->user()->role && auth()->user()->role->name === 'ordenador_gasto')
+   <li class="nav-item">
+    <a class="nav-link" href="{{ route('ordenador.dashboard') }}">
+        <i class="fas fa-file-invoice me-1"></i>
+        Cuentas de Cobro
+        @if(isset($cuentasPendientes) && $cuentasPendientes > 0)
+            <span class="badge bg-danger ms-1">{{ $cuentasPendientes }}</span>
+        @endif
+    </a>
+</li>
+
+    @elseif(auth()->user()->role->name === 'contratista')
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('cuentas-cobro.index') }}">
+                <i class="fas fa-file-invoice me-1"></i>
+                Mis Cuentas
+            </a>
+        </li>
+    @elseif(auth()->user()->role->name === 'supervisor')
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('supervisor.dashboard') }}">
+                <i class="fas fa-clipboard-check me-1"></i>
+                Panel Supervisor
+            </a>
+        </li>
+    @elseif(auth()->user()->role->name === 'alcalde')
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('alcalde.dashboard') }}">
+                <i class="fas fa-user-tie me-1"></i>
+                Panel Alcalde
+            </a>
+        </li>
+    @endif
+@endif
+
                     @endauth
                 </ul>
                 

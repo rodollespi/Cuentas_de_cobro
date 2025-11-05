@@ -127,57 +127,15 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     // ORDENADOR DEL GASTO
     // ============================================
-    Route::get('/ordenador', [OrdenadorController::class, 'index'])->name('ordenador.dashboard');
-
-    //============TESORERIA==================
-
-    Route::middleware(['auth'])->group(function () {
+       Route::middleware(['auth', 'check.role:ordenador_gasto'])
+       ->prefix('ordenador')
+       ->name('ordenador.')
+       ->group(function () {
+        Route::get('/dashboard', [OrdenadorController::class, 'index'])->name('dashboard');
+        Route::post('/cuenta/{id}/aprobar-final', [OrdenadorController::class, 'aprobarFinal'])->name('aprobarFinal');
+        Route::post('/cuenta/{id}/rechazar-final', [OrdenadorController::class, 'rechazarFinal'])->name('rechazarFinal');
+    });
     
-    // Dashboard de Tesorería
-    Route::get('/tesoreria/dashboard', [TesoreriaController::class, 'index'])
-        ->name('tesoreria.dashboard');
-    
-    // Cuentas de Cobro - Vista
-    Route::get('/tesoreria/cuentas-cobro', [TesoreriaController::class, 'cuentasCobro'])
-        ->name('tesoreria.cuentas-cobro.index');
-    
-    Route::get('/tesoreria/cuentas-cobro/{id}', [TesoreriaController::class, 'verCuentaCobro'])
-        ->name('tesoreria.cuentas-cobro.show');
-    
-    // Procesar Pagos
-    Route::post('/tesoreria/pagos/cheque', [TesoreriaController::class, 'generarCheque'])
-        ->name('tesoreria.pagos.cheque');
-    
-    Route::post('/tesoreria/pagos/transferencia', [TesoreriaController::class, 'procesarTransferencia'])
-        ->name('tesoreria.pagos.transferencia');
-    
-    Route::post('/tesoreria/pagos/confirmar', [TesoreriaController::class, 'confirmarPago'])
-        ->name('tesoreria.pagos.confirmar');
-    
-    Route::post('/tesoreria/pagos/masivo', [TesoreriaController::class, 'pagoMasivo'])
-        ->name('tesoreria.pagos.masivo');
-    
-    // Historial de Pagos
-    Route::get('/tesoreria/historial', [TesoreriaController::class, 'historial'])
-        ->name('tesoreria.historial');
-    
-    // Reportes
-    Route::get('/tesoreria/reportes', [TesoreriaController::class, 'reportes'])
-        ->name('tesoreria.reportes');
-    
-    Route::post('/tesoreria/reportes/generar', [TesoreriaController::class, 'generarReporte'])
-        ->name('tesoreria.reportes.generar');
-    
-    Route::get('/tesoreria/reportes/descargar/{tipo}', [TesoreriaController::class, 'descargarReporte'])
-        ->name('tesoreria.reportes.descargar');
-    
-    // Comprobantes
-    Route::get('/tesoreria/comprobante/{id}', [TesoreriaController::class, 'verComprobante'])
-        ->name('tesoreria.comprobante');
-    
-    Route::get('/tesoreria/comprobante/{id}/descargar', [TesoreriaController::class, 'descargarComprobante'])
-        ->name('tesoreria.comprobante.descargar');
-});
     // ============================================
     // PERFIL Y CONFIGURACIÓN
     // ============================================
@@ -187,6 +145,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
     Route::post('/configuracion/guardar', [ConfiguracionController::class, 'save'])->name('configuracion.save');
 });
+
 
 
 
