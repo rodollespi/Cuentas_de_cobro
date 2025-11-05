@@ -12,6 +12,7 @@ use App\Http\Controllers\AlcaldeController;
 use App\Http\Controllers\OrdenadorController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\TesoreriaController;
 
 // ============================================
 // RUTA RAÍZ
@@ -123,19 +124,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/cuentas-cobro/{id}/finalizar', [AlcaldeController::class, 'finalizar'])->name('cuentas-cobro.finalizar');
     });
 
+    // ============================================
+    // ORDENADOR DEL GASTO
+    // ============================================
+    Route::get('/ordenador', [OrdenadorController::class, 'index'])->name('ordenador.dashboard');
 
-    //---------------------
-    // ordenador gasto
-    //----------------
-   Route::middleware(['auth', 'check.role:ordenador_gasto'])->prefix('ordenador')->name('ordenador.')->group(function () {
-    Route::get('/dashboard', [OrdenadorController::class, 'index'])->name('dashboard');
-    Route::get('/cuenta/{id}', [OrdenadorController::class, 'show'])->name('ordenador.show');
-    Route::post('/cuenta/{id}/autorizar', [OrdenadorController::class, 'autorizar'])->name('autorizar');
-    Route::post('/cuenta/{id}/rechazar', [OrdenadorController::class, 'rechazar'])->name('rechazar');
-   });
-
-
-    
     // ============================================
     // PERFIL Y CONFIGURACIÓN
     // ============================================

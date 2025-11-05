@@ -101,12 +101,9 @@ class AuthController extends Controller
 
     // Datos específicos para tesorería
     if ($user->hasRole('tesoreria')) {
-        $dashboardData = array_merge($dashboardData, [
-            'pendingPayments' => 0,
-            'paymentsToday' => 0,
-            'totalPaid' => 0
-        ]);
-    }
+    return redirect()->route('tesoreria.dashboard');
+}
+
 
     // Datos específicos para ordenador del gasto
     if ($user->hasRole('ordenador_gasto')) {

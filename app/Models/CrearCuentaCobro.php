@@ -36,14 +36,14 @@ class CrearCuentaCobro extends Model
         'numero_cuenta',
         'titular_cuenta',
 
-        // 👇 Campos de control de flujo
+        // Campos de control de flujo
         'estado',         // pendiente, aprobado, rechazado, finalizado
         'observaciones',  // observaciones del supervisor o alcalde
         'supervisor_id',  // quién revisó la cuenta
         'fecha_revision', // cuándo la revisó
     ];
 
-    // 🔹 Casts para formateo automático de datos
+    // 
     protected $casts = [
         'detalle_items' => 'array',
         'fecha_emision' => 'date',
