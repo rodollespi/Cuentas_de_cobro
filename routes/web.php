@@ -127,7 +127,15 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     // ORDENADOR DEL GASTO
     // ============================================
-    Route::get('/ordenador', [OrdenadorController::class, 'index'])->name('ordenador.dashboard');
+  Route::middleware(['auth', 'check.role:ordenador_gasto'])
+    ->prefix('ordenador')
+    ->name('ordenador.')
+    ->group(function () {
+        Route::get('/dashboard', [OrdenadorController::class, 'index'])->name('dashboard');
+        Route::get('/cuenta/{id}', [OrdenadorController::class, 'show'])->name('ordenador.show');
+        Route::post('/cuenta/{id}/autorizar', [OrdenadorController::class, 'autorizar'])->name('autorizar');
+        Route::post('/cuenta/{id}/rechazar', [OrdenadorController::class, 'rechazar'])->name('rechazar');
+});
 
     // ============================================
     // PERFIL Y CONFIGURACIÓN
