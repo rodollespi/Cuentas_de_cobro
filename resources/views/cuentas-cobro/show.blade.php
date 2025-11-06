@@ -104,8 +104,8 @@
                     
                     <p><strong>Período:</strong><br>{{ $cuentaCobro->periodo }}</p>
 
-                    <!-- Items Detallados -->
-                    @if($cuentaCobro->detalle_items && count(json_decode($cuentaCobro->detalle_items, true)) > 0)
+                    <!-- Items Detallados (Corregido) -->
+                    @if($cuentaCobro->detalle_items && count($cuentaCobro->detalle_items) > 0)
                     <div class="mt-4">
                         <h6 class="border-bottom pb-2">Items Detallados</h6>
                         <div class="table-responsive">
@@ -119,7 +119,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach(json_decode($cuentaCobro->detalle_items, true) as $item)
+                                    @foreach($cuentaCobro->detalle_items as $item)
                                     <tr>
                                         <td>{{ $item['descripcion'] ?? '' }}</td>
                                         <td>{{ $item['cantidad'] ?? 0 }}</td>
