@@ -7,53 +7,39 @@ use App\Models\CrearCuentaCobro;
 
 class OrdenadorController extends Controller
 {
-    /**
-     * Mostrar todas las cuentas de cobro pendientes o revisadas.
-     */
+    // Mostrar solo las cuentas que Tesorería ya aprobó
     public function index()
     {
-        // Solo mostrar las cuentas pendientes o revisadas
-        $cuentas = CrearCuentaCobro::whereIn('estado', ['pendiente', 'Revisada'])
-            ->orderBy('created_at', 'desc')
-            ->get();
-
+        $cuentas = CrearCuentaCobro::where('estado', 'tesoreria_aprobada')->get();
         return view('ordenador.dashboard', compact('cuentas'));
     }
 
-    /**
-     * Mostrar detalles de una cuenta específica.
-     */
-    public function show($id)
+    // Aprobar pago final
+    public function aprobarFinal($id)
     {
         $cuenta = CrearCuentaCobro::findOrFail($id);
-        return view('ordenador.verCuenta', compact('cuenta'));
-    }
-
-    /**
-     * Autorizar una cuenta de cobro.
-     */
-    public function autorizar($id)
-    {
-        $cuenta = CrearCuentaCobro::findOrFail($id);
-        $cuenta->estado = 'Autorizada';
+        $cuenta->estado = 'aprobada_final';
+        $cuenta->fecha_revision = now();
         $cuenta->save();
 
-        return redirect()->route('ordenador.dashboard')->with('success', 'Cuenta de cobro autorizada correctamente.');
+        return redirect()->route('ordenador.dashboard')
+                         ->with('success', '✅ Pago final aprobado correctamente.');
     }
 
-    /**
-     * Rechazar una cuenta de cobro.
-     */
-    public function rechazar($id, Request $request)
+    // Rechazar pago final
+    public function rechazarFinal($id)
     {
         $cuenta = CrearCuentaCobro::findOrFail($id);
-        $cuenta->estado = 'Rechazada';
-        $cuenta->observaciones = $request->input('observaciones', 'Sin observaciones');
+        $cuenta->estado = 'rechazada_final';
+        $cuenta->fecha_revision = now();
         $cuenta->save();
 
-        return redirect()->route('ordenador.dashboard')->with('error', 'Cuenta de cobro rechazada.');
+        return redirect()->route('ordenador.dashboard')
+                         ->with('error', '❌ Cuenta rechazada en la fase final.');
     }
 }
+
+
 
 
 

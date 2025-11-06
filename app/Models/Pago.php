@@ -35,7 +35,7 @@ class Pago extends Model
      */
     public function cuentaCobro()
     {
-        return $this->belongsTo(CuentaCobro::class, 'cuenta_cobro_id');
+        return $this->belongsTo(CrearCuentaCobro::class, 'cuenta_cobro_id');
     }
 
     /**

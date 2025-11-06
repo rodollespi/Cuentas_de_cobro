@@ -1,4 +1,4 @@
-@extends('tesoreria.layouts.app')
+@extends('layouts.app')
 @section('title', 'Cuenta de Cobro #'.$cuentaCobro->id)
 
 @push('styles')
@@ -79,14 +79,18 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($cuentaCobro->detalle_items as $item)
+                @forelse($cuentaCobro->detalle_items ?? [] as $item)
                     <tr>
                         <td class="px-4 py-2">{{ $item['descripcion'] ?? 'N/A' }}</td>
                         <td class="px-4 py-2">{{ $item['cantidad'] ?? 'N/A' }}</td>
-                        <td class="px-4 py-2">${{ number_format($item['valor_unitario'] ?? 0,2) }}</td>
-                        <td class="px-4 py-2">${{ number_format($item['valor_total'] ?? 0,2) }}</td>
+                        <td class="px-4 py-2">${{ number_format($item['valor_unitario'] ?? 0, 2) }}</td>
+                        <td class="px-4 py-2">${{ number_format($item['valor_total'] ?? 0, 2) }}</td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center px-4 py-2">No hay items registrados</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
