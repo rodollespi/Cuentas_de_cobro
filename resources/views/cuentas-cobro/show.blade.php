@@ -105,7 +105,17 @@
                     <p><strong>Período:</strong><br>{{ $cuentaCobro->periodo }}</p>
 
                     <!-- Items Detallados -->
-                    @if($cuentaCobro->detalle_items && count(json_decode($cuentaCobro->detalle_items, true)) > 0)
+                    @php
+                        // Aceptar tanto array como JSON string (el modelo ya puede castear a array)
+                        if (is_array($cuentaCobro->detalle_items)) {
+                            $items = $cuentaCobro->detalle_items;
+                        } elseif (is_string($cuentaCobro->detalle_items)) {
+                            $items = json_decode($cuentaCobro->detalle_items, true) ?? [];
+                        } else {
+                            $items = [];
+                        }
+                    @endphp
+                    @if(!empty($items) && count($items) > 0)
                     <div class="mt-4">
                         <h6 class="border-bottom pb-2">Items Detallados</h6>
                         <div class="table-responsive">
@@ -119,7 +129,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach(json_decode($cuentaCobro->detalle_items, true) as $item)
+                                    @foreach($items as $item)
                                     <tr>
                                         <td>{{ $item['descripcion'] ?? '' }}</td>
                                         <td>{{ $item['cantidad'] ?? 0 }}</td>

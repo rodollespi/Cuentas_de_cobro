@@ -282,8 +282,17 @@
                                 </h6>
                                 
                                 <div id="items-container">
-                                    @if($cuentaCobro->detalle_items && count(json_decode($cuentaCobro->detalle_items, true)) > 0)
-                                        @foreach(json_decode($cuentaCobro->detalle_items, true) as $index => $item)
+                                    @php
+                                        if (is_array($cuentaCobro->detalle_items)) {
+                                            $items = $cuentaCobro->detalle_items;
+                                        } elseif (is_string($cuentaCobro->detalle_items)) {
+                                            $items = json_decode($cuentaCobro->detalle_items, true) ?? [];
+                                        } else {
+                                            $items = [];
+                                        }
+                                    @endphp
+                                    @if(!empty($items) && count($items) > 0)
+                                        @foreach($items as $index => $item)
                                         <div class="item-row mb-3 p-3 border rounded">
                                             <div class="row">
                                                 <div class="col-md-5 mb-2">
