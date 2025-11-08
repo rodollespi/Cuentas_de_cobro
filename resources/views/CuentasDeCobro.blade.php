@@ -346,6 +346,9 @@
             </div>
             
             <div class="button-group">
+                    <a href="{{ route('contratista.documentos') }}" class="btn btn-outline-primary mt-3">
+                    <i class="fas fa-upload me-2"></i> Subir Documentos
+                        </a>
                 <button type="submit" value = "Create" class="btn btn-generar">Generar Cuenta de Cobro</button>
                 <button type="reset" class="btn btn-limpiar">Limpiar Formulario</button>
                 <a href="/dashboard" class="btn btn-limpiar">Volver</a>

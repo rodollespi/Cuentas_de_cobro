@@ -390,22 +390,24 @@
     </div>
     @endif
 
-    @if($userRole === 'contratista')
     <!-- Dashboard para Contratista -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-body text-center py-5">
-                    <i class="fas fa-user-tie fa-4x text-primary mb-3"></i>
-                    <h4>Panel de Contratista</h4>
-                    <p class="text-muted">Aquí podrás crear y gestionar tus cuentas de cobro.</p>
-                    <p class="text-muted">Esta funcionalidad se implementará próximamente.</p>
-                </div>
+     @if(strtolower($userRole) === 'contratista')
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-user-tie fa-4x text-primary mb-3"></i>
+                <h4>Panel de Contratista</h4>
+                <p class="text-muted">Aquí podrás crear y gestionar tus cuentas de cobro.</p>
+                <a href="{{ route('contratista.documentos') }}" class="btn btn-outline-primary mt-3">
+                    <i class="fas fa-upload me-2"></i> Subir Documentos
+                </a>
             </div>
         </div>
     </div>
-    @endif
-
+</div>
+@endif
+    <!-- Mensaje para usuarios sin rol asignado -->
     @if(!$userRole)
     <!-- Usuario sin rol asignado -->
     <div class="row">
@@ -446,12 +448,28 @@
                             </a>
                             @break
 
-                        @case('contratacion')
-                            <i class="fas fa-handshake fa-4x text-primary mb-3"></i>
-                            <h4>Panel de Contratación</h4>
-                            <p class="text-muted">Aquí podrás gestionar contratos y contratistas.</p>
-                            @break
+                       @case('contratacion')
+    <div class="text-center">
+        <i class="fas fa-handshake fa-4x text-primary mb-3"></i>
+        <h4>Panel de Contratación</h4>
+        <p class="text-muted">Aquí podrás gestionar contratos y contratistas.</p>
+
+        <!-- Botón para ir al módulo de verificación -->
+        <a href="{{ route('contratacion.index') }}" class="btn btn-outline-primary mt-3">
+            <i class="fas fa-file-alt me-2"></i> Verificar Documentos
+        </a>
+
+        <!-- (Opcional) Otros botones o accesos futuros -->
+        {{-- <a href="#" class="btn btn-outline-secondary mt-3">Gestionar Contratos</a> --}}
+    </div>
+@break
+
+                        @default
+                            <i class="fas fa-user-cog fa-4x text-secondary mb-3"></i>
+                            <h4>Panel de {{ ucfirst(str_replace('_', ' ', $userRole)) }}</h4>
+                            <p class="text-muted">Aquí podrás gestionar las funcionalidades asignadas a tu rol.</p>
                     @endswitch
+
                     <p class="text-muted">Esta funcionalidad se implementará próximamente.</p>
                 </div>
             </div>
