@@ -17,6 +17,12 @@ class CrearCuentaCobroController extends Controller
                                     ->latest()
                                     ->get();
         
+        // Depuración
+        \Log::info('Cuentas de cobro encontradas: ' . $cuentasCobro->count());
+        foreach($cuentasCobro as $cuenta) {
+            \Log::info("Cuenta #{$cuenta->id} - Estado: {$cuenta->estado}");
+        }
+        
         return view('cuentas-cobro.index', compact('cuentasCobro'));
     }
 
@@ -92,6 +98,7 @@ class CrearCuentaCobroController extends Controller
             'tipo_cuenta' => $request->tipoCuenta,
             'numero_cuenta' => $request->numeroCuenta,
             'titular_cuenta' => $request->titularCuenta,
+            'estado' => 'pendiente', // Establecer estado inicial
         ]);
 
         // Redirigir con mensaje de éxito

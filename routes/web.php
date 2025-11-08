@@ -10,9 +10,6 @@ use App\Http\Controllers\CuentaCobroController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\AlcaldeController;
 use App\Http\Controllers\OrdenadorController;
-use App\Http\Controllers\PerfilController;
-use App\Http\Controllers\ConfiguracionController;
-use App\Http\Controllers\TesoreriaController;
 
 // ============================================
 // RUTA RAÍZ
@@ -136,17 +133,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/cuenta/{id}/rechazar-final', [OrdenadorController::class, 'rechazarFinal'])->name('rechazarFinal');
     });
     
-    // ============================================
-    // PERFIL Y CONFIGURACIÓN
-    // ============================================
-    Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil.index');
-    Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
-
-    Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
-    Route::post('/configuracion/guardar', [ConfiguracionController::class, 'save'])->name('configuracion.save');
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/ordenador', [OrdenadorController::class, 'index'])
+        ->name('ordenador.dashboard');
+    });
 });
-
-
-
-
 
