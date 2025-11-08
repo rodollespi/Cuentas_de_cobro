@@ -68,11 +68,17 @@
                             <h4>Panel de Ordenador del Gasto</h4>
                             <p class="text-muted">Aquí podrás autorizar pagos y gestionar presupuestos.</p>
                             @break
-                        @case('tesoreria')
-                            <i class="fas fa-coins fa-4x text-success mb-3"></i>
-                            <h4>Panel de Tesorería</h4>
-                            <p class="text-muted">Aquí podrás procesar pagos y generar reportes financieros.</p>
+                            
+                            @case('tesoreria')
+                            <a href="{{ route('tesoreria.dashboard') }}" class="text-decoration-none">
+                                <div class="text-center">
+                                    <i class="fas fa-coins fa-4x text-success mb-3"></i>
+                                    <h4>Panel de Tesorería</h4>
+                                    <p class="text-muted">Aquí podrás procesar pagos y generar reportes financieros.</p>
+                                </div>
+                            </a>
                             @break
+
                         @case('contratacion')
                             <i class="fas fa-handshake fa-4x text-primary mb-3"></i>
                             <h4>Panel de Contratación</h4>
