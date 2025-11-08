@@ -1,32 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2>Mis Cuentas de Cobro</h2>
-    
+<div class="container py-4">
+    <h2 class="text-center mb-4">
+        <i class="fas fa-file-invoice-dollar me-2"></i>
+        Mis Cuentas de Cobro
+    </h2>
+
+    {{-- Alertas --}}
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
     <div class="mb-3">
         <a href="{{ route('cuentas-cobro.create') }}" class="btn btn-primary">
             Crear Nueva Cuenta de Cobro
         </a>
-
-        <div class="mb-3">
- 
-      <a href="{{ route('contratista.documentos') }}" class="btn btn-outline-primary mt-3">
- <i class="fas fa-upload me-2"></i> Subir Documentos
-  </a>
-</div>
     </div>
 
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Panel del Contratista</h5>
-        
+            
             @if($cuentasCobro->count() > 0)
             <table class="table table-striped">
                 <thead>
@@ -65,8 +60,43 @@
                 No hay cuentas de cobro registradas. 
                 <a href="{{ route('cuentas-cobro.create') }}">Crear la primera</a>
             </div>
-            @endif
         </div>
     </div>
 </div>
+
+{{-- Estilos adicionales --}}
+@push('styles')
+<style>
+    @media print {
+        .no-print { display: none !important; }
+    }
+</style>
+@endpush
+
+{{-- Script del gráfico --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('estadisticasCuentas');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Pendientes', 'Aprobadas', 'Rechazadas'],
+            datasets: [{
+                data: [
+                    {{ $cuentasCobro->filter(function($cuenta) { $s = strtolower($cuenta->estado ?? ''); return str_contains($s, 'pendient'); })->count() }},
+                    {{ $cuentasCobro->filter(function($cuenta) { $s = strtolower($cuenta->estado ?? ''); return str_contains($s, 'aproba'); })->count() }},
+                    {{ $cuentasCobro->filter(function($cuenta) { $s = strtolower($cuenta->estado ?? ''); return str_contains($s, 'rechaz'); })->count() }}
+                ],
+                backgroundColor: ['#ffc107', '#28a745', '#dc3545']
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+});
+</script>
 @endsection

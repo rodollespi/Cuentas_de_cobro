@@ -13,8 +13,6 @@ use App\Http\Controllers\OrdenadorController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\TesoreriaController;
-use App\Http\Controllers\ContratacionController;
-use App\Http\Controllers\ContratistaDocumentoController;
 
 // ============================================
 // RUTA RAÍZ
@@ -62,13 +60,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/remove-role', [RolController::class, 'removeRole'])->name('remove');
         Route::get('/users-without-role', [RolController::class, 'getUsersWithoutRole'])->name('users.without.role');
     });
-      // ============================================
-     // MÓDULO CONTRATISTA - Ver Documento en vista propia
-    // ============================================
-    Route::middleware(['auth'])->group(function () {
-    Route::get('/documento/ver/{id}', [ContratistaDocumentoController::class, 'vista'])
-        ->name('documento.vista');
- });
+  // ============================================
+ // MÓDULO CONTRATISTA - Ver Documento en vista propia
+// ============================================
+Route::get('/documento/ver/{id}', [ContratistaDocumentoController::class, 'vista'])
+    ->name('documento.vista');
     // ============================================
     // MÓDULO CONTRATACIÓN
     // ============================================
@@ -175,12 +171,9 @@ Route::get('/dashboard/contratista/documentos/{id}/ver', [ContratistaDocumentoCo
 
     Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
     Route::post('/configuracion/guardar', [ConfiguracionController::class, 'save'])->name('configuracion.save');
-
-   // ============================================
-    // Contratacion - Revisión de Documentos
-    // ===========================================
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard/contratacion', [ContratacionController::class, 'index'])->name('contratacion.index');
-    Route::post('/dashboard/contratacion/{id}/estado', [ContratacionController::class, 'actualizarEstado'])->name('contratacion.actualizarEstado');
-    Route::get('/dashboard/contratacion/{id}/ver', [ContratacionController::class, 'ver'])->name('contratacion.ver');
 });
+
+
+
+
+

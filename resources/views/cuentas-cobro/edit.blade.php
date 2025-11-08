@@ -146,43 +146,57 @@
                                 @endphp
 
                                 <div id="items-container">
-                                    @if(count($items) > 0)
+                                    @php
+                                        if (is_array($cuentaCobro->detalle_items)) {
+                                            $items = $cuentaCobro->detalle_items;
+                                        } elseif (is_string($cuentaCobro->detalle_items)) {
+                                            $items = json_decode($cuentaCobro->detalle_items, true) ?? [];
+                                        } else {
+                                            $items = [];
+                                        }
+                                    @endphp
+                                    @if(!empty($items) && count($items) > 0)
                                         @foreach($items as $index => $item)
-                                            <div class="item-row mb-3 p-3 border rounded">
-                                                <div class="row">
-                                                    <div class="col-md-5 mb-2">
-                                                        <label class="form-label">Descripción</label>
-                                                        <input type="text" 
-                                                               class="form-control descripcion" 
-                                                               name="descripcion[]" 
-                                                               value="{{ $item['descripcion'] ?? '' }}">
-                                                    </div>
-                                                    <div class="col-md-2 mb-2">
-                                                        <label class="form-label">Cantidad</label>
-                                                        <input type="number" 
-                                                               class="form-control cantidad" 
-                                                               name="cantidad[]" 
-                                                               value="{{ $item['cantidad'] ?? 1 }}">
-                                                    </div>
-                                                    <div class="col-md-2 mb-2">
-                                                        <label class="form-label">Valor Unitario</label>
-                                                        <input type="number" 
-                                                               class="form-control valor-unitario" 
-                                                               name="valorUnitario[]" 
-                                                               value="{{ $item['valor_unitario'] ?? 0 }}">
-                                                    </div>
-                                                    <div class="col-md-2 mb-2">
-                                                        <label class="form-label">Valor Total</label>
-                                                        <input type="number" 
-                                                               class="form-control valor-total" 
-                                                               name="valorTotal[]" 
-                                                               value="{{ $item['valor_total'] ?? 0 }}" readonly>
-                                                    </div>
-                                                    <div class="col-md-1 mb-2 d-flex align-items-end">
-                                                        <button type="button" class="btn btn-danger btn-sm remove-item" {{ $loop->first ? 'disabled' : '' }}>
-                                                            <i class="fas fa-times"></i>
-                                                        </button>
-                                                    </div>
+                                        <div class="item-row mb-3 p-3 border rounded">
+                                            <div class="row">
+                                                <div class="col-md-5 mb-2">
+                                                    <label class="form-label">Descripción</label>
+                                                    <input type="text" 
+                                                           class="form-control descripcion" 
+                                                           name="descripcion[]" 
+                                                           value="{{ $item['descripcion'] ?? '' }}"
+                                                           placeholder="Descripción del item">
+                                                </div>
+                                                <div class="col-md-2 mb-2">
+                                                    <label class="form-label">Cantidad</label>
+                                                    <input type="number" 
+                                                           class="form-control cantidad" 
+                                                           name="cantidad[]" 
+                                                           value="{{ $item['cantidad'] ?? 1 }}" 
+                                                           min="1"
+                                                           step="1">
+                                                </div>
+                                                <div class="col-md-2 mb-2">
+                                                    <label class="form-label">Valor Unitario</label>
+                                                    <input type="number" 
+                                                           class="form-control valor-unitario" 
+                                                           name="valorUnitario[]" 
+                                                           value="{{ $item['valor_unitario'] ?? 0 }}" 
+                                                           min="0"
+                                                           step="0.01">
+                                                </div>
+                                                <div class="col-md-2 mb-2">
+                                                    <label class="form-label">Valor Total</label>
+                                                    <input type="number" 
+                                                           class="form-control valor-total" 
+                                                           name="valorTotal[]" 
+                                                           value="{{ $item['valor_total'] ?? 0 }}" 
+                                                           readonly>
+                                                </div>
+                                                <div class="col-md-1 mb-2 d-flex align-items-end">
+                                                    <button type="button" class="btn btn-danger btn-sm remove-item" {{ $loop->first ? 'disabled' : '' }}>
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
                                                 </div>
                                             </div>
                                         @endforeach

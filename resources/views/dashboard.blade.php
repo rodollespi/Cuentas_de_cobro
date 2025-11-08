@@ -30,46 +30,13 @@
         </div>
     </div>
 
-    @if($userRole === 'alcalde')
-    <!-- Dashboard para Alcalde -->
-    <div class="row">
-        <!-- Estadísticas Generales -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Usuarios
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalUsers ?? 0 }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Incluye el dashboard específico para Alcalde -->
+    @include('dashboard._alcalde')
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Usuarios con Rol
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $usersWithRoles ?? 0 }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-user-check fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Incluye el dashboard específico para Supervisor -->
+    @include('dashboard._supervisor')
 
+<<<<<<< HEAD
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
@@ -408,6 +375,11 @@
 </div>
 @endif
     <!-- Mensaje para usuarios sin rol asignado -->
+=======
+    <!-- Incluye el dashboard específico para Contratista -->
+    @include('dashboard._contratista')
+
+>>>>>>> 52ecd712977066b101ac92e1c0f1c62dfe96cb7a
     @if(!$userRole)
     <!-- Usuario sin rol asignado -->
     <div class="row">
