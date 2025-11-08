@@ -68,6 +68,10 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Subir documento</button>
+
+         <a href="{{ route('dashboard') }}" class="btn btn-primary">
+ <i class="fas fa-tachometer-alt me-2"></i> Volver
+    </a>
 </form>
 
 

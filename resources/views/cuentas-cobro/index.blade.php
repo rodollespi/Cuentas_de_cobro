@@ -14,12 +14,19 @@
         <a href="{{ route('cuentas-cobro.create') }}" class="btn btn-primary">
             Crear Nueva Cuenta de Cobro
         </a>
+
+        <div class="mb-3">
+ 
+      <a href="{{ route('contratista.documentos') }}" class="btn btn-outline-primary mt-3">
+ <i class="fas fa-upload me-2"></i> Subir Documentos
+  </a>
+</div>
     </div>
 
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Panel del Contratista</h5>
-            
+        
             @if($cuentasCobro->count() > 0)
             <table class="table table-striped">
                 <thead>
