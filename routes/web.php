@@ -180,7 +180,12 @@ Route::prefix('tesoreria')
     ->middleware(['auth'])
     ->name('tesoreria.')
     ->group(function () {
+        
+        // Listado de contratistas aprobados
 
+        Route::get('/contratistas-aprobados', [TesoreriaController::class, 'contratistasAprobados'])
+            ->name('contratistas.aprobados');
+            
         // Dashboard
         Route::get('/dashboard', [TesoreriaController::class, 'index'])
             ->name('dashboard');

@@ -1,5 +1,38 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+    /* Aplicar estilos similares al área de Tesorería al contenido existente sin cambiar la estructura */
+    .container.mt-4 { padding-top: 1rem; }
+    .card.shadow-sm {
+        background-color: rgba(255,255,255,0.04) !important;
+        color: #fff !important;
+        border: none !important;
+    }
+    .card.shadow-sm .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: #fff !important;
+        border: none !important;
+    }
+    .card-body { color: inherit !important; }
+    .table.table-bordered {
+        background: transparent;
+        color: #fff;
+    }
+    .table.table-bordered thead th {
+        background-color: rgba(255,255,255,0.03);
+        color: #fff;
+    }
+    .btn-info.btn-sm {
+        background-color: rgba(13,110,253,0.9) !important;
+        border-color: rgba(13,110,253,0.9) !important;
+        color: #fff !important;
+    }
+    .btn-success { background-color: #1cc88a; border-color: #1cc88a; }
+    .alert { color: inherit; }
+</style>
+@endpush
+
 @section('content')
 <!-- El contenedor para el modal se cargará dinámicamente aquí -->
 <div id="modalContainer"></div>

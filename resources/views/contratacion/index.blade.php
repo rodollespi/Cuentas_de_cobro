@@ -12,13 +12,13 @@
       @endif
 
       <table class="table table-hover">
-        <thead>
+        <thead class="table-light">
           <tr>
-            <th>Contratista</th>
-            <th>Documento</th>
-            <th>Estado</th>
-            <th>Comentario</th>
-            <th>Acciones</th>
+            <th class="text-primary">Contratista</th>
+            <th class="text-primary">Documento</th>
+            <th class="text-primary">Estado</th>
+            <th class="text-primary">Comentario</th>
+            <th class="text-primary">Acciones</th>
           </tr>
         </thead>
         <tbody>

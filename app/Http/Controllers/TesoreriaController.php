@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\CrearCuentaCobro;
 use App\Models\Pago;
+use App\Models\User;
+use App\Models\Documento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -286,6 +288,45 @@ class TesoreriaController extends Controller
             return back()->with('error', 'No hay comprobante disponible.');
         }
 
-        return response()->download(storage_path('app/public/' . $pago->comprobante));
+        $path = storage_path('app/public/' . $pago->comprobante);
+
+        if (!file_exists($path)) {
+            return back()->with('error', 'Archivo no encontrado.');
+        }
+
+        return response()->download($path);
+    }
+
+    public function contratistasAprobados()
+    {
+        $contratistas = User::whereHas('role', function ($q) {
+                $q->where('name', 'contratista');
+            })
+            ->whereHas('documentos') // que tenga documentos
+            ->whereDoesntHave('documentos', function ($q) {
+                $q->whereIn('estado', ['pendiente', 'rechazado']);
+            })
+            ->withCount([
+                'documentos as total_documentos',
+                'documentos as documentos_aprobados' => function ($q) {
+                    $q->where('estado', 'aprobado');
+                }
+            ])
+            ->get();
+
+        return view('tesoreria.contratistas_aprobados', compact('contratistas'));
+    }
+
+    public function verDocumento($id)
+    {
+        $documento = Documento::findOrFail($id);
+        
+        $path = storage_path('app/public/documentos/' . $documento->archivo);
+        
+        if (!file_exists($path)) {
+            abort(404, 'Archivo no encontrado');
+        }
+        
+        return response()->file($path);
     }
 }
