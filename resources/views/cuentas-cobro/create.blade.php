@@ -452,9 +452,6 @@
                                 <i class="fas fa-times me-2"></i>
                                 Cancelar
                             </a>
-                                <a href="{{ route('contratista.documentos') }}" class="btn btn-outline-primary mt-3">
-                                <i class="fas fa-upload me-2"></i> Subir Documentos
-                               </a>
                             <button type="submit" class="btn btn-success">
                                 <i class="fas fa-save me-2"></i>
                                 Crear Cuenta de Cobro
