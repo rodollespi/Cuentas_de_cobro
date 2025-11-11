@@ -71,6 +71,14 @@
                         Reportes
                     </a>
                 </li>
+
+                <li class="nav-item">
+                   <a class="nav-link" href="{{ route('tesoreria.contratistas.aprobados') }}">
+                      <i class="fas fa-user-check me-1"></i>
+                      Contratistas Aprobados
+                  </a>
+               </li>
+
             </ul>
 
             <ul class="navbar-nav ms-auto">

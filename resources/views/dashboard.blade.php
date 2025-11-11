@@ -16,7 +16,7 @@
                     <p class="text-muted mb-0">
                         Bienvenido, <strong>{{ $user->name }}</strong>
                         @if($userRole)
-                        - <span class="badge bg-primary">{{ ucfirst(str_replace('_', ' ', $userRole)) }}</span>
+                            - <span class="badge bg-primary">{{ ucfirst(str_replace('_', ' ', $userRole)) }}</span>
                         @endif
                     </p>
                 </div>
@@ -30,17 +30,23 @@
         </div>
     </div>
 
-    <!-- Incluye el dashboard específico para Alcalde -->
-    @include('dashboard._alcalde')
+    {{-- DASHBOARD ALCALDE --}}
+    @if($userRole === 'alcalde')
+        @include('dashboard._alcalde')
+    @endif
 
-    <!-- Incluye el dashboard específico para Supervisor -->
-    @include('dashboard._supervisor')
+    {{-- DASHBOARD SUPERVISOR --}}
+    @if($userRole === 'supervisor')
+        @include('dashboard._supervisor')
+    @endif
 
-    <!-- Incluye el dashboard específico para Contratista -->
-    @include('dashboard._contratista')
+    {{-- DASHBOARD CONTRATISTA --}}
+    @if(strtolower($userRole) === 'contratista')
+        @include('dashboard._contratista')
+    @endif
 
+    {{-- USUARIO SIN ROL --}}
     @if(!$userRole)
-    <!-- Usuario sin rol asignado -->
     <div class="row">
         <div class="col-12">
             <div class="alert alert-warning" role="alert">
@@ -56,57 +62,61 @@
     </div>
     @endif
 
+    {{-- OTROS ROLES: ordenador_gasto, tesoreria, contratacion --}}
     @if(in_array($userRole, ['ordenador_gasto', 'tesoreria', 'contratacion']))
-    <!-- Dashboard para otros roles -->
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-body text-center py-5">
+
                     @switch($userRole)
+
                         @case('ordenador_gasto')
                             <i class="fas fa-money-check-alt fa-4x text-info mb-3"></i>
                             <h4>Panel de Ordenador del Gasto</h4>
                             <p class="text-muted">Aquí podrás autorizar pagos y gestionar presupuestos.</p>
                             @break
-                            
-                            @case('tesoreria')
+
+                        @case('tesoreria')
                             <a href="{{ route('tesoreria.dashboard') }}" class="text-decoration-none">
-                                <div class="text-center">
-                                    <i class="fas fa-coins fa-4x text-success mb-3"></i>
-                                    <h4>Panel de Tesorería</h4>
-                                    <p class="text-muted">Aquí podrás procesar pagos y generar reportes financieros.</p>
-                                </div>
+                                <i class="fas fa-coins fa-4x text-success mb-3"></i>
+                                <h4>Panel de Tesorería</h4>
+                                <p class="text-muted">Procesar pagos y generar reportes financieros.</p>
                             </a>
                             @break
 
                         @case('contratacion')
                             <i class="fas fa-handshake fa-4x text-primary mb-3"></i>
                             <h4>Panel de Contratación</h4>
-                            <p class="text-muted">Aquí podrás gestionar contratos y contratistas.</p>
+                            <p class="text-muted">Gestionar contratos y verificar documentos.</p>
+
+                            <a href="{{ route('contratacion.index') }}" class="btn btn-outline-primary mt-3">
+                                <i class="fas fa-file-alt me-2"></i> Verificar Documentos
+                            </a>
                             @break
+
+                        @default
+                            <i class="fas fa-user-cog fa-4x text-secondary mb-3"></i>
+                            <h4>Panel de {{ ucfirst(str_replace('_', ' ', $userRole)) }}</h4>
+                            <p class="text-muted">Gestión de funcionalidades asignadas.</p>
+
                     @endswitch
-                    <p class="text-muted">Esta funcionalidad se implementará próximamente.</p>
+
                 </div>
             </div>
         </div>
     </div>
     @endif
+
 </div>
 
 @push('styles')
 <style>
-    .border-left-primary {
-        border-left: 0.25rem solid #4e73df !important;
-    }
-    .border-left-success {
-        border-left: 0.25rem solid #1cc88a !important;
-    }
-    .border-left-info {
-        border-left: 0.25rem solid #36b9cc !important;
-    }
-    .border-left-warning {
-        border-left: 0.25rem solid #f6c23e !important;
-    }
+    .border-left-primary { border-left: 0.25rem solid #4e73df !important; }
+    .border-left-success { border-left: 0.25rem solid #1cc88a !important; }
+    .border-left-info    { border-left: 0.25rem solid #36b9cc !important; }
+    .border-left-warning { border-left: 0.25rem solid #f6c23e !important; }
 </style>
 @endpush
+
 @endsection

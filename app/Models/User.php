@@ -93,4 +93,13 @@ class User extends Authenticatable
     {
         return $this->hasAnyRole(['alcalde', 'ordenador_gasto']);
     }
+    /**
+     * Relación con documentos - un usuario tiene muchos documentos
+     */
+    
+    public function documentos()
+{
+    return $this->hasMany(\App\Models\Documento::class, 'user_id');
+}
+
 }
