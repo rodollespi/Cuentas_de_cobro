@@ -86,7 +86,7 @@ class CrearCuentaCobroController extends Controller
             'tipo_documento' => $request->tipoDocumento,
             'numero_documento' => $request->numeroDocumento,
             'nombre_beneficiario' => $request->nombreBeneficiario,
-            'telefono_beneficiario' => $request->telefonoBeneficiario ?? null,
+            'telefono_beneficiario' => $request->telefonoBeneficiario,
             'direccion_beneficiario' => $request->direccionBeneficiario ?? null,
             'concepto' => $request->concepto,
             'periodo' => $request->periodo,

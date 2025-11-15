@@ -199,14 +199,15 @@
 
         <div class="col-md-6 mb-3">
             <label for="telefonoBeneficiario" class="form-label">
-                Teléfono
+                Teléfono <span class="text-danger">*</span>
             </label>
             <input type="text" 
                    class="form-control @error('telefonoBeneficiario') is-invalid @enderror" 
                    id="telefonoBeneficiario" 
                    name="telefonoBeneficiario" 
                    value="{{ old('telefonoBeneficiario') }}"
-                   placeholder="Teléfono de contacto">
+                   placeholder="Teléfono de contacto"
+                   required>
             @error('telefonoBeneficiario')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
