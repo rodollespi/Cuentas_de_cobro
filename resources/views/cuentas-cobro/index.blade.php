@@ -60,9 +60,6 @@
             <a href="{{ route('cuentas-cobro.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus me-2"></i>Crear Cuenta de Cobro
             </a>
-            <a href="{{ route('contratista.documentos') }}" class="btn btn-outline-primary">
-                <i class="fas fa-upload me-2"></i>Subir Documentos
-            </a>
         </div>
     </div>
 

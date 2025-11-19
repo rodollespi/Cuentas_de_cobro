@@ -30,66 +30,82 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-body">
-                    <form action="{{ route('cuentas-cobro.store') }}" method="POST" id="cuentaCobroForm">
+                    <form action="{{ route('cuentas-cobro.store') }}" method="POST" enctype="multipart/form-data" id="cuentaCobroForm">
                         @csrf
 
-                        <!-- Sección de Documentos Aprobados - NUEVA SECCIÓN -->
+                        <!-- Sección de Adjuntar Documentos -->
                         <div class="mb-4">
                             <h5 class="border-bottom pb-2 mb-3">
                                 <i class="fas fa-paperclip text-primary me-2"></i>
-                                Documentos Aprobados Requeridos
-                                            <a href="{{ route('contratista.documentos') }}" class="btn btn-outline-primary">
-                                            <i class="fas fa-upload me-2"></i>Subir Documentos
-                                        </a>
+                                Adjuntar Documentos de Soporte
                             </h5>
                             
-                            @if(isset($documentosAprobados) && $documentosAprobados->count() > 0)
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Documentos disponibles:</strong> Selecciona los documentos que deseas incluir en esta cuenta de cobro.
-                                </div>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Adjunta los documentos</strong> que respalden esta cuenta de cobro (PDF, JPG, PNG). Puedes seleccionar varios archivos a la vez.
+                            </div>
 
-                                <div class="row">
-                                    @foreach($documentosAprobados as $documento)
-                                    <div class="col-md-6 mb-3">
-                                        <div class="card document-card">
-                                            <div class="card-body">
-                                                <div class="form-check">
-                                                    <input class="form-check-input documento-checkbox" 
-                                                           type="checkbox" 
-                                                           name="documentos_seleccionados[]" 
-                                                           value="{{ $documento->id }}" 
-                                                           id="doc{{ $documento->id }}"
-                                                           checked>
-                                                    <label class="form-check-label w-100" for="doc{{ $documento->id }}">
-                                                        <strong>{{ $documento->nombre }}</strong>
-                                                        <br>
-                                                        <small class="text-muted">
-                                                            <i class="fas fa-calendar me-1"></i>
-                                                            Subido: {{ $documento->created_at->format('d/m/Y') }}
-                                                        </small>
-                                                        <br>
-                                                        <a href="{{ route('documento.vista', $documento->id) }}" 
-                                                           target="_blank" class="btn btn-sm btn-outline-primary mt-1">
-                                                            <i class="fas fa-eye me-1"></i> Ver documento
-                                                        </a>
-                                                    </label>
-                                                </div>
-                                            </div>
+                            <div id="documentos-container">
+                                <div class="documento-item mb-3 p-3 border rounded bg-light">
+                                    <div class="row align-items-end">
+                                        <div class="col-md-5 mb-2">
+                                            <label class="form-label">Tipo de Documento</label>
+                                            <select name="tipo_documento[]" class="form-control tipo-documento">
+                                                <option value="">Seleccione un tipo</option>
+                                                <optgroup label="Documentos Jurídicos">
+                                                    <option value="Cédula del Representante Legal">Cédula del Representante Legal</option>
+                                                    <option value="RUT">RUT</option>
+                                                    <option value="Certificado de Existencia y Representación Legal">Certificado de Existencia y Representación Legal</option>
+                                                    <option value="Registro Único de Proponentes (RUP)">Registro Único de Proponentes (RUP)</option>
+                                                    <option value="Antecedentes Disciplinarios">Antecedentes Disciplinarios</option>
+                                                    <option value="Responsabilidad Fiscal">Responsabilidad Fiscal</option>
+                                                    <option value="Antecedentes Judiciales">Antecedentes Judiciales</option>
+                                                    <option value="Hoja de Vida">Hoja de Vida</option>
+                                                </optgroup>
+                                                <optgroup label="Documentos Financieros">
+                                                    <option value="Estados Financieros">Estados Financieros</option>
+                                                    <option value="Declaración de Renta">Declaración de Renta</option>
+                                                    <option value="Certificación Bancaria">Certificación Bancaria</option>
+                                                    <option value="Formato Único de Ingresos">Formato Único de Ingresos</option>
+                                                </optgroup>
+                                                <optgroup label="Documentos de Experiencia">
+                                                    <option value="Contratos Ejecutados">Contratos Ejecutados</option>
+                                                    <option value="Certificaciones de Experiencia">Certificaciones de Experiencia</option>
+                                                    <option value="Soportes de Experiencia">Soportes de Experiencia</option>
+                                                </optgroup>
+                                                <optgroup label="Documentos Técnicos">
+                                                    <option value="Propuesta Técnica">Propuesta Técnica</option>
+                                                    <option value="Propuesta Económica">Propuesta Económica</option>
+                                                    <option value="Cronograma">Cronograma</option>
+                                                    <option value="Ficha Técnica">Ficha Técnica</option>
+                                                </optgroup>
+                                                <optgroup label="Otros">
+                                                    <option value="Seguro de Cumplimiento">Seguro de Cumplimiento</option>
+                                                    <option value="Pago Seguridad Social">Pago Seguridad Social</option>
+                                                    <option value="Pólizas">Pólizas</option>
+                                                    <option value="Cámara de Comercio">Cámara de Comercio</option>
+                                                    <option value="Otros">Otros</option>
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Archivo (PDF, JPG, PNG)</label>
+                                            <input type="file" name="archivos[]" class="form-control archivo-input" accept=".pdf,.jpg,.jpeg,.png">
+                                            <small class="text-muted archivo-nombre"></small>
+                                        </div>
+                                        <div class="col-md-1 mb-2">
+                                            <button type="button" class="btn btn-danger btn-sm remove-documento w-100" disabled>
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         </div>
                                     </div>
-                                    @endforeach
                                 </div>
-                            @else
-                                <div class="alert alert-warning">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                    <strong>No tienes documentos aprobados.</strong> 
-                                    Para crear una cuenta de cobro, necesitas tener documentos aprobados. 
-                                    <a href="{{ route('contratista.documentos') }}" class="alert-link">
-                                        <i class="fas fa-external-link-alt me-1"></i>Ir a subir documentos
-                                    </a>
-                                </div>
-                            @endif
+                            </div>
+                            
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="add-documento">
+                                <i class="fas fa-plus me-2"></i>
+                                Agregar Otro Documento
+                            </button>
                         </div>
 
                         <!-- Información de la Alcaldía -->
@@ -524,8 +540,7 @@
                                 <i class="fas fa-times me-2"></i>
                                 Cancelar
                             </a>
-                            <button type="submit" class="btn btn-success" id="submitBtn"
-                                    {{ (!isset($documentosAprobados) || $documentosAprobados->count() == 0) ? 'disabled' : '' }}>
+                            <button type="submit" class="btn btn-success" id="submitBtn">
                                 <i class="fas fa-save me-2"></i>
                                 Crear Cuenta de Cobro
                             </button>
@@ -542,18 +557,116 @@
 document.addEventListener('DOMContentLoaded', function() {
     const itemsContainer = document.getElementById('items-container');
     const addItemBtn = document.getElementById('add-item');
-    const submitBtn = document.getElementById('submitBtn');
+    const documentosContainer = document.getElementById('documentos-container');
+    const addDocumentoBtn = document.getElementById('add-documento');
     
-    // Validar documentos seleccionados
-    function validarDocumentos() {
-        const documentosSeleccionados = document.querySelectorAll('.documento-checkbox:checked');
-        submitBtn.disabled = documentosSeleccionados.length === 0;
+    // ========== FUNCIONES PARA DOCUMENTOS ==========
+    
+    // Agregar nuevo documento
+    addDocumentoBtn.addEventListener('click', function() {
+        const newDocumento = document.createElement('div');
+        newDocumento.className = 'documento-item mb-3 p-3 border rounded bg-light';
+        newDocumento.innerHTML = `
+            <div class="row align-items-end">
+                <div class="col-md-5 mb-2">
+                    <label class="form-label">Tipo de Documento</label>
+                    <select name="tipo_documento[]" class="form-control tipo-documento">
+                        <option value="">Seleccione un tipo</option>
+                        <optgroup label="Documentos Jurídicos">
+                            <option value="Cédula del Representante Legal">Cédula del Representante Legal</option>
+                            <option value="RUT">RUT</option>
+                            <option value="Certificado de Existencia y Representación Legal">Certificado de Existencia y Representación Legal</option>
+                            <option value="Registro Único de Proponentes (RUP)">Registro Único de Proponentes (RUP)</option>
+                            <option value="Antecedentes Disciplinarios">Antecedentes Disciplinarios</option>
+                            <option value="Responsabilidad Fiscal">Responsabilidad Fiscal</option>
+                            <option value="Antecedentes Judiciales">Antecedentes Judiciales</option>
+                            <option value="Hoja de Vida">Hoja de Vida</option>
+                        </optgroup>
+                        <optgroup label="Documentos Financieros">
+                            <option value="Estados Financieros">Estados Financieros</option>
+                            <option value="Declaración de Renta">Declaración de Renta</option>
+                            <option value="Certificación Bancaria">Certificación Bancaria</option>
+                            <option value="Formato Único de Ingresos">Formato Único de Ingresos</option>
+                        </optgroup>
+                        <optgroup label="Documentos de Experiencia">
+                            <option value="Contratos Ejecutados">Contratos Ejecutados</option>
+                            <option value="Certificaciones de Experiencia">Certificaciones de Experiencia</option>
+                            <option value="Soportes de Experiencia">Soportes de Experiencia</option>
+                        </optgroup>
+                        <optgroup label="Documentos Técnicos">
+                            <option value="Propuesta Técnica">Propuesta Técnica</option>
+                            <option value="Propuesta Económica">Propuesta Económica</option>
+                            <option value="Cronograma">Cronograma</option>
+                            <option value="Ficha Técnica">Ficha Técnica</option>
+                        </optgroup>
+                        <optgroup label="Otros">
+                            <option value="Seguro de Cumplimiento">Seguro de Cumplimiento</option>
+                            <option value="Pago Seguridad Social">Pago Seguridad Social</option>
+                            <option value="Pólizas">Pólizas</option>
+                            <option value="Cámara de Comercio">Cámara de Comercio</option>
+                            <option value="Otros">Otros</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Archivo (PDF, JPG, PNG)</label>
+                    <input type="file" name="archivos[]" class="form-control archivo-input" accept=".pdf,.jpg,.jpeg,.png">
+                    <small class="text-muted archivo-nombre"></small>
+                </div>
+                <div class="col-md-1 mb-2">
+                    <button type="button" class="btn btn-danger btn-sm remove-documento w-100">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        documentosContainer.appendChild(newDocumento);
+        
+        // Agregar event listener para mostrar nombre del archivo
+        const archivoInput = newDocumento.querySelector('.archivo-input');
+        archivoInput.addEventListener('change', mostrarNombreArchivo);
+        
+        updateRemoveDocumentosButtons();
+    });
+    
+    // Mostrar nombre del archivo seleccionado
+    function mostrarNombreArchivo(e) {
+        const input = e.target;
+        const nombreSpan = input.parentElement.querySelector('.archivo-nombre');
+        if (input.files.length > 0) {
+            nombreSpan.textContent = '📎 ' + input.files[0].name;
+        } else {
+            nombreSpan.textContent = '';
+        }
     }
     
-    // Event listener para checkboxes de documentos
-    document.querySelectorAll('.documento-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', validarDocumentos);
+    // Event listeners iniciales para archivos
+    document.querySelectorAll('.archivo-input').forEach(input => {
+        input.addEventListener('change', mostrarNombreArchivo);
     });
+    
+    // Eliminar documento
+    documentosContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-documento') || e.target.closest('.remove-documento')) {
+            const btn = e.target.classList.contains('remove-documento') ? e.target : e.target.closest('.remove-documento');
+            if (!btn.disabled) {
+                btn.closest('.documento-item').remove();
+                updateRemoveDocumentosButtons();
+            }
+        }
+    });
+    
+    // Actualizar botones de eliminar documentos
+    function updateRemoveDocumentosButtons() {
+        const documentos = document.querySelectorAll('.documento-item');
+        const removeButtons = document.querySelectorAll('.remove-documento');
+        
+        removeButtons.forEach(btn => {
+            btn.disabled = documentos.length <= 1;
+        });
+    }
+    
+    // ========== FUNCIONES PARA ITEMS ==========
     
     // Agregar nuevo item
     addItemBtn.addEventListener('click', function() {
@@ -593,7 +706,6 @@ document.addEventListener('DOMContentLoaded', function() {
         cantidadInput.addEventListener('input', calcularValores);
         valorUnitarioInput.addEventListener('input', calcularValores);
         
-        // Actualizar botones de eliminar
         updateRemoveButtons();
     });
     
@@ -606,15 +718,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const valorUnitario = parseFloat(row.querySelector('.valor-unitario').value) || 0;
             const valorTotal = cantidad * valorUnitario;
             
-            // Actualizar valor total del item
             row.querySelector('.valor-total').value = valorTotal.toFixed(2);
             subtotalGeneral += valorTotal;
         });
         
-        // Actualizar subtotal general
         document.getElementById('subtotal').value = subtotalGeneral.toFixed(2);
-        
-        // Calcular total general
         calcularTotalGeneral();
     }
     
@@ -627,7 +735,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('total').value = total.toFixed(2);
     }
     
-    // Actualizar botones de eliminar
+    // Actualizar botones de eliminar items
     function updateRemoveButtons() {
         const items = document.querySelectorAll('.item-row');
         const removeButtons = document.querySelectorAll('.remove-item');
@@ -656,10 +764,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.getElementById('iva').addEventListener('input', calcularTotalGeneral);
     
-    // Calcular valores iniciales
+    // Inicializar
     calcularValores();
     updateRemoveButtons();
-    validarDocumentos(); // Validar documentos al cargar
+    updateRemoveDocumentosButtons();
 });
 </script>
 @endpush
@@ -669,19 +777,22 @@ document.addEventListener('DOMContentLoaded', function() {
     .item-row {
         background-color: #f8f9fa;
     }
+    .documento-item {
+        background-color: #f8f9fc;
+        transition: all 0.3s ease;
+    }
+    .documento-item:hover {
+        background-color: #e9ecf5;
+    }
     .form-label {
         font-weight: 500;
         font-size: 0.875rem;
     }
-    .document-card {
-        border: 2px solid #e9ecef;
-        transition: border-color 0.3s ease;
-    }
-    .document-card:hover {
-        border-color: #007bff;
-    }
-    .document-card .card-body {
-        padding: 1rem;
+    .archivo-nombre {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.8rem;
+        color: #28a745;
     }
 </style>
 @endpush
