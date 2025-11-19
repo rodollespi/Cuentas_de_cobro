@@ -1,10 +1,10 @@
-# 🧾 Sistema de Gestión de Cuentas de Cobro para Alcaldías
+# Sistema de Gestión de Cuentas de Cobro para Alcaldías
 
 Este proyecto permite gestionar de manera centralizada las **cuentas de cobro**, control de pagos, estados y usuarios bajo un sistema de **roles y permisos** diseñado para entidades públicas como las alcaldías. Está orientado a mejorar la trazabilidad, seguridad y eficiencia del proceso administrativo.
 
 ---
 
-## 📌 1. Descripción del Proyecto
+## 1. Descripción del Proyecto
 
 El sistema permite:
 
@@ -18,7 +18,7 @@ El sistema permite:
 
 ---
 
-## ⚙️ 2. Instrucciones de Instalación y Configuración
+## 2. Instrucciones de Instalación y Configuración
 
 ### **Requisitos previos**
 - PHP >= 8.x  
