@@ -4,148 +4,228 @@
     <meta charset="utf-8">
     <title>Cuenta de Cobro #{{ $cuentaCobro->id }}</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 20px; }
-        .section { margin-bottom: 25px; }
-        .section-title { background-color: #f8f9fa; padding: 8px; font-weight: bold; border-left: 4px solid #007bff; }
-        .table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .table th, .table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .table th { background-color: #f8f9fa; }
-        .total-section { background-color: #f8f9fa; padding: 15px; margin-top: 20px; }
-        .signature-section { margin-top: 50px; }
-        .signature-line { border-top: 1px solid #333; width: 300px; margin-top: 60px; }
+        body { 
+            font-family: Arial, sans-serif; 
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .section { 
+            margin-bottom: 15px; 
+        }
+        .table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 10px 0;
+        }
+        .table th, .table td { 
+            border: 1px solid #ddd; 
+            padding: 6px; 
+            text-align: left;
+        }
+        .table th { 
+            background-color: #f2f2f2; 
+            font-weight: bold;
+        }
+        .text-right { 
+            text-align: right; 
+        }
+        .text-center { 
+            text-align: center; 
+        }
+        .total-section { 
+            margin-top: 20px; 
+            border-top: 1px solid #333;
+            padding-top: 10px;
+        }
+        .signature-section {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 10px;
+            text-align: center;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>CUENTA DE COBRO</h1>
-        <p>N° {{ $cuentaCobro->id }}</p>
+        <h1 style="margin: 0; font-size: 18px;">CUENTA DE COBRO</h1>
+        <p style="margin: 5px 0; font-size: 14px;">N° {{ $cuentaCobro->id }}</p>
+        <p style="margin: 0; font-size: 12px;">Fecha de emisión: {{ \Carbon\Carbon::parse($cuentaCobro->fecha_emision)->format('d/m/Y') }}</p>
     </div>
 
-    <!-- Información de la Alcaldía -->
     <div class="section">
-        <div class="section-title">INFORMACIÓN DE LA ALCALDÍA</div>
-        <table width="100%">
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; border-bottom: 1px solid #ccc; padding-bottom: 3px;">
+            INFORMACIÓN DE LA ALCALDÍA
+        </h3>
+        <table style="width: 100%;">
             <tr>
-                <td width="50%"><strong>Nombre:</strong> {{ $cuentaCobro->nombre_alcaldia }}</td>
-                <td><strong>NIT:</strong> {{ $cuentaCobro->nit_alcaldia }}</td>
+                <td style="width: 30%;"><strong>Nombre:</strong></td>
+                <td>{{ $cuentaCobro->nombre_alcaldia }}</td>
             </tr>
             <tr>
-                <td><strong>Dirección:</strong> {{ $cuentaCobro->direccion_alcaldia }}</td>
-                <td><strong>Teléfono:</strong> {{ $cuentaCobro->telefono_alcaldia }}</td>
+                <td><strong>NIT:</strong></td>
+                <td>{{ $cuentaCobro->nit_alcaldia }}</td>
             </tr>
             <tr>
-                <td><strong>Ciudad:</strong> {{ $cuentaCobro->ciudad_alcaldia }}</td>
-                <td><strong>Fecha Emisión:</strong> {{ $cuentaCobro->fecha_emision->format('d/m/Y') }}</td>
+                <td><strong>Dirección:</strong></td>
+                <td>{{ $cuentaCobro->direccion_alcaldia }}</td>
+            </tr>
+            <tr>
+                <td><strong>Teléfono:</strong></td>
+                <td>{{ $cuentaCobro->telefono_alcaldia }}</td>
+            </tr>
+            <tr>
+                <td><strong>Ciudad:</strong></td>
+                <td>{{ $cuentaCobro->ciudad_alcaldia }}</td>
             </tr>
         </table>
     </div>
 
-    <!-- Información del Beneficiario -->
     <div class="section">
-        <div class="section-title">INFORMACIÓN DEL BENEFICIARIO</div>
-        <table width="100%">
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; border-bottom: 1px solid #ccc; padding-bottom: 3px;">
+            INFORMACIÓN DEL BENEFICIARIO
+        </h3>
+        <table style="width: 100%;">
             <tr>
-                <td width="50%"><strong>Nombre:</strong> {{ $cuentaCobro->nombre_beneficiario }}</td>
-                <td><strong>Documento:</strong> {{ $cuentaCobro->tipo_documento }} {{ $cuentaCobro->numero_documento }}</td>
+                <td style="width: 30%;"><strong>Nombre:</strong></td>
+                <td>{{ $cuentaCobro->nombre_beneficiario }}</td>
             </tr>
             <tr>
-                <td><strong>Teléfono:</strong> {{ $cuentaCobro->telefono_beneficiario ?? 'N/A' }}</td>
-                <td><strong>Dirección:</strong> {{ $cuentaCobro->direccion_beneficiario ?? 'N/A' }}</td>
+                <td><strong>Documento:</strong></td>
+                <td>{{ $cuentaCobro->tipo_documento }} {{ $cuentaCobro->numero_documento }}</td>
+            </tr>
+            @if($cuentaCobro->telefono_beneficiario)
+            <tr>
+                <td><strong>Teléfono:</strong></td>
+                <td>{{ $cuentaCobro->telefono_beneficiario }}</td>
+            </tr>
+            @endif
+            @if($cuentaCobro->direccion_beneficiario)
+            <tr>
+                <td><strong>Dirección:</strong></td>
+                <td>{{ $cuentaCobro->direccion_beneficiario }}</td>
+            </tr>
+            @endif
+        </table>
+    </div>
+
+    <div class="section">
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; border-bottom: 1px solid #ccc; padding-bottom: 3px;">
+            DETALLE DE LA CUENTA
+        </h3>
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 30%;"><strong>Concepto:</strong></td>
+                <td>{{ $cuentaCobro->concepto }}</td>
+            </tr>
+            <tr>
+                <td><strong>Período:</strong></td>
+                <td>{{ $cuentaCobro->periodo }}</td>
             </tr>
         </table>
     </div>
 
-    <!-- Concepto y Período -->
     <div class="section">
-        <div class="section-title">CONCEPTO Y PERÍODO</div>
-        <p><strong>Período:</strong> {{ $cuentaCobro->periodo }}</p>
-        <p><strong>Concepto:</strong> {{ $cuentaCobro->concepto }}</p>
-    </div>
-
-    <!-- Detalle de Items -->
-    <div class="section">
-        <div class="section-title">DETALLE DE ITEMS</div>
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; border-bottom: 1px solid #ccc; padding-bottom: 3px;">
+            DETALLE DE ITEMS
+        </h3>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Descripción</th>
-                    <th width="15%">Cantidad</th>
-                    <th width="20%">Valor Unitario</th>
-                    <th width="20%">Valor Total</th>
+                    <th style="width: 50%;">Descripción</th>
+                    <th style="width: 15%; text-align: center;">Cantidad</th>
+                    <th style="width: 20%; text-align: right;">Valor Unitario</th>
+                    <th style="width: 15%; text-align: right;">Valor Total</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($cuentaCobro->detalle_items as $item)
-                <tr>
-                    <td>{{ $item['descripcion'] }}</td>
-                    <td>{{ $item['cantidad'] }}</td>
-                    <td>${{ number_format($item['valor_unitario'], 2) }}</td>
-                    <td>${{ number_format($item['valor_total'], 2) }}</td>
-                </tr>
-                @endforeach
+                @php
+                    // Ya no necesitamos json_decode porque el casting lo convierte automáticamente
+                    $detalleItems = $cuentaCobro->detalle_items ?? [];
+                    $subtotalCalculado = 0;
+                @endphp
+                
+                @if(is_array($detalleItems) && count($detalleItems) > 0)
+                    @foreach($detalleItems as $item)
+                    @php
+                        $valorTotal = $item['valor_total'] ?? 0;
+                        $subtotalCalculado += $valorTotal;
+                    @endphp
+                    <tr>
+                        <td>{{ $item['descripcion'] ?? '' }}</td>
+                        <td class="text-center">{{ $item['cantidad'] ?? 0 }}</td>
+                        <td class="text-right">${{ number_format($item['valor_unitario'] ?? 0, 2) }}</td>
+                        <td class="text-right">${{ number_format($valorTotal, 2) }}</td>
+                    </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="4" class="text-center">No hay items registrados</td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     </div>
 
-    <!-- Totales -->
     <div class="total-section">
-        <table width="100%">
+        <table style="width: 300px; margin-left: auto;">
             <tr>
-                <td width="60%"></td>
-                <td width="40%">
-                    <table width="100%">
-                        <tr>
-                            <td><strong>Subtotal:</strong></td>
-                            <td>${{ number_format($cuentaCobro->subtotal, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>IVA:</strong></td>
-                            <td>${{ number_format($cuentaCobro->iva, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>TOTAL:</strong></td>
-                            <td><strong>${{ number_format($cuentaCobro->total, 2) }}</strong></td>
-                        </tr>
-                    </table>
-                </td>
+                <td><strong>Subtotal:</strong></td>
+                <td class="text-right">${{ number_format($cuentaCobro->subtotal, 2) }}</td>
+            </tr>
+            <tr>
+                <td><strong>IVA ({{ number_format(($cuentaCobro->iva / $cuentaCobro->subtotal) * 100, 0) }}%):</strong></td>
+                <td class="text-right">${{ number_format($cuentaCobro->iva, 2) }}</td>
+            </tr>
+            <tr style="border-top: 1px solid #333; font-weight: bold;">
+                <td><strong>TOTAL:</strong></td>
+                <td class="text-right">${{ number_format($cuentaCobro->total, 2) }}</td>
             </tr>
         </table>
     </div>
 
-    <!-- Información Bancaria -->
     <div class="section">
-        <div class="section-title">INFORMACIÓN BANCARIA</div>
-        <table width="100%">
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; border-bottom: 1px solid #ccc; padding-bottom: 3px;">
+            INFORMACIÓN BANCARIA
+        </h3>
+        <table style="width: 100%;">
             <tr>
-                <td width="50%"><strong>Banco:</strong> {{ $cuentaCobro->banco }}</td>
-                <td><strong>Tipo de Cuenta:</strong> {{ $cuentaCobro->tipo_cuenta }}</td>
+                <td style="width: 30%;"><strong>Banco:</strong></td>
+                <td>{{ $cuentaCobro->banco }}</td>
             </tr>
             <tr>
-                <td><strong>Número de Cuenta:</strong> {{ $cuentaCobro->numero_cuenta }}</td>
-                <td><strong>Titular:</strong> {{ $cuentaCobro->titular_cuenta }}</td>
+                <td><strong>Tipo de Cuenta:</strong></td>
+                <td>{{ $cuentaCobro->tipo_cuenta }}</td>
+            </tr>
+            <tr>
+                <td><strong>Número de Cuenta:</strong></td>
+                <td>{{ $cuentaCobro->numero_cuenta }}</td>
+            </tr>
+            <tr>
+                <td><strong>Titular:</strong></td>
+                <td>{{ $cuentaCobro->titular_cuenta }}</td>
             </tr>
         </table>
     </div>
 
-    <!-- Firmas -->
     <div class="signature-section">
-        <table width="100%">
-            <tr>
-                <td width="50%" align="center">
-                    <div class="signature-line"></div>
-                    <p>Firma del Beneficiario</p>
-                </td>
-                <td width="50%" align="center">
-                    <div class="signature-line"></div>
-                    <p>Firma de Recepción</p>
-                </td>
-            </tr>
-        </table>
+        <p>_________________________</p>
+        <p><strong>{{ $cuentaCobro->nombre_beneficiario }}</strong></p>
+        <p>Firma del Beneficiario</p>
     </div>
 
-    <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #666;">
-        <p>Documento generado el {{ now()->format('d/m/Y H:i') }}</p>
+    <div class="footer">
+        <p>Documento generado el {{ now()->format('d/m/Y H:i:s') }}</p>
+        <p>Estado: {{ strtoupper($cuentaCobro->estado) }}</p>
     </div>
 </body>
 </html>

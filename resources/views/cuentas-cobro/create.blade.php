@@ -38,6 +38,9 @@
                             <h5 class="border-bottom pb-2 mb-3">
                                 <i class="fas fa-paperclip text-primary me-2"></i>
                                 Documentos Aprobados Requeridos
+                                            <a href="{{ route('contratista.documentos') }}" class="btn btn-outline-primary">
+                                            <i class="fas fa-upload me-2"></i>Subir Documentos
+                                        </a>
                             </h5>
                             
                             @if(isset($documentosAprobados) && $documentosAprobados->count() > 0)

@@ -43,14 +43,12 @@ class CrearCuentaCobro extends Model
 
     protected $casts = [
         'detalle_items' => 'array',
-        'documentos_asociados' => 'array', 
+        'documentos_asociados' => 'array',
         'fecha_emision' => 'date',
-        'fecha_revision' => 'datetime',
         'subtotal' => 'decimal:2',
         'iva' => 'decimal:2',
-        'total' => 'decimal:2',
+        'total' => 'decimal:2'
     ];
-
     /**
      * Obtener detalle_items siempre como array
      */
