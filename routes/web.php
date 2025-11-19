@@ -69,6 +69,8 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     Route::get('/documento/ver/{id}', [ContratistaDocumentoController::class, 'vista'])
         ->name('documento.vista');
+    Route::get('/cuentas-cobro/{id}/descargar-pdf', [CrearCuentaCobroController::class, 'descargarPDF'])
+    ->name('cuentas-cobro.descargar-pdf');
 
     // ============================================
     // MÓDULO CONTRATACIÓN
@@ -230,4 +232,6 @@ Route::prefix('tesoreria')
         Route::get('/comprobante/{id}/descargar', [TesoreriaController::class, 'descargarComprobante'])
             ->name('comprobante.descargar');
     });
+
+    
 
