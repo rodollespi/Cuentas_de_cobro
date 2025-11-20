@@ -38,7 +38,7 @@ class CuentasCobroSeeder extends Seeder
                 'tipo_cuenta' => 'Ahorros',
                 'numero_cuenta' => '123456789',
                 'titular_cuenta' => $user->name,
-                'estado' => 'finalizado',
+                'estado' => 'pendiente',
             ]);
         }
         $this->command->info('Cuenta de cobro creada exitosamente.');

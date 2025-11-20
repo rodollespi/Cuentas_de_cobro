@@ -15,40 +15,109 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Buscar el rol de alcalde
-        $alcaldeRoles = Roles::where(column: 'name', operator: 'alcalde')->first();
-        
-        if (!$alcaldeRoles) {
-            $this->command->error('El rol de alcalde no existe. Ejecuta primero el RoleSeeder.');
+        // Obtener todos los roles existentes
+        $roles = Roles::all();
+
+        if ($roles->isEmpty()) {
+            $this->command->error('No hay roles existentes. Ejecuta primero el RoleSeeder.');
             return;
         }
-
-        // Crear usuario administrador
-        $admin = User::firstOrCreate(
-            ['email' => 'daniel00250@hotmail.com'],
-            [
+        $usersData = [
+            'alcalde' => [
                 'name' => 'Daniel Ramirez',
                 'email' => 'daniel00250@hotmail.com',
-                'password' => Hash::make('cosa1234'),
-                'role_id' => $alcaldeRoles->id,
-                'email_verified_at' => now(),
-            ]
-        );
+                'password' => 'cosa1234',
+            ],
+            'supervisor' => [
+                'name' => 'juan',
+                'email' => 'juan@gmail.com', 
+                'password' => 'password123',
+            ],
+            'contratista' => [
+                'name' => 'sanda',
+                'email' => 'sanda@gmail.com',
+                'password' => 'password123',
+            ],
+            'tesoreria' => [
+                'name' => 'david',
+                'email' => 'david@gmail.com',
+                'password' => 'password123',
+            ],
+            'ordenador' => [
+                'name' => 'yami',
+                'email' => 'yami@gmail.com',
+                'password' => 'password123',
+            ],
+            // Agregar el rol 6 (felipe)
+            'otro' => [ // O el nombre que tenga el rol 6
+                'name' => 'felipe',
+                'email' => 'felipe@gmail.com',
+                'password' => 'password123',
+            ],
+        ];
 
-        if ($admin->wasRecentlyCreated) {
-            $this->command->info('✅ Usuario administrador creado exitosamente:');
-            $this->command->info('   👤 Nombre: Daniel Ramirez');
-            $this->command->info('   📧 Email: daniel00250@hotmail.com');
-            $this->command->info('   🔑 Contraseña: cosa1234');
-            $this->command->info('   👑 Rol: Alcalde');
-        } else {
-            $this->command->info('ℹ️  El usuario administrador ya existe.');
+        $createdCount = 0;
+        $updatedCount = 0;
+
+        foreach ($roles as $role) {
+            $roleName = strtolower($role->name);
             
-            // Actualizar el rol si es necesario
-            if ($admin->role_id !== $alcaldeRoles->id) {
-                $admin->update(['role_id' => $alcaldeRoles->id]);
-                $this->command->info('✅ Rol actualizado a Alcalde.');
+            // Buscar datos del usuario por role_id o por nombre de rol
+            $userData = null;
+            
+            // Mapear role_id a los datos correspondientes
+            $roleMapping = [
+                1 => 'supervisor',     // juan
+                2 => 'contratista',    // sanda  
+                3 => 'alcalde',        // daniel
+                4 => 'tesoreria',      // david
+                5 => 'ordenador',      // yami
+                6 => 'otro',           // felipe
+            ];
+            
+            if (isset($roleMapping[$role->id]) && isset($usersData[$roleMapping[$role->id]])) {
+                $userData = $usersData[$roleMapping[$role->id]];
+            } elseif (isset($usersData[$roleName])) {
+                $userData = $usersData[$roleName];
+            }
+
+            if ($userData) {
+                $user = User::firstOrCreate(
+                    ['email' => $userData['email']],
+                    [
+                        'name' => $userData['name'],
+                        'email' => $userData['email'],
+                        'password' => Hash::make($userData['password']),
+                        'role_id' => $role->id,
+                        'email_verified_at' => now(),
+                    ]
+                );
+
+                if ($user->wasRecentlyCreated) {
+                    $this->command->info("✅ Usuario {$role->name} creado:");
+                    $this->command->info("   👤 Nombre: {$userData['name']}");
+                    $this->command->info("   📧 Email: {$userData['email']}");
+                    $this->command->info("   🔑 Contraseña: {$userData['password']}");
+                    $this->command->info("   👑 Rol: {$role->name} (ID: {$role->id})");
+                    $createdCount++;
+                } else {
+                    // Actualizar el rol si es necesario
+                    if ($user->role_id !== $role->id) {
+                        $user->update(['role_id' => $role->id]);
+                        $this->command->info("✅ Usuario {$userData['name']} actualizado a rol: {$role->name}");
+                        $updatedCount++;
+                    } else {
+                        $this->command->info("ℹ️  Usuario {$userData['name']} ya existe con rol {$role->name}.");
+                    }
+                }
+            } else {
+                $this->command->warn("⚠️  No hay datos de usuario definidos para el rol: {$role->name} (ID: {$role->id})");
             }
         }
+
+        $this->command->info("\n📊 Resumen:");
+        $this->command->info("   ✅ Usuarios creados: {$createdCount}");
+        $this->command->info("   🔄 Usuarios actualizados: {$updatedCount}");
+        $this->command->info("   👥 Total de roles procesados: " . $roles->count());
     }
 }
