@@ -385,7 +385,7 @@
                                 <p class="fw-bold mb-1">{{ $cuentaCobro->supervisor->name }}</p>
                                 <p class="text-muted small mb-2">
                                     <i class="fas fa-calendar me-1"></i>
-                                    {{ $cuentaCobro->fecha_revision?->format('d/m/Y H:i') }}
+                                    {{ $cuentaCobro->fecha_revision ? \Carbon\Carbon::parse($cuentaCobro->fecha_revision)->format('d/m/Y H:i') : 'N/A' }}
                                 </p>
                                 @if($cuentaCobro->observaciones)
                                     <div class="bg-white rounded p-3 border">
