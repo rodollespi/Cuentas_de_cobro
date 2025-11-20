@@ -68,11 +68,11 @@ class AdminUserSeeder extends Seeder
             
             // Mapear role_id a los datos correspondientes
             $roleMapping = [
-                1 => 'supervisor',     // juan
-                2 => 'contratista',    // sanda  
+                1 => 'contratista',     // supervisor
+                2 => 'supervisor',    // contratista  
                 3 => 'alcalde',        // daniel
-                4 => 'tesoreria',      // david
-                5 => 'ordenador',      // yami
+                4 => 'ordenador',      // yami
+                5 => 'tesoreria',      // david
                 6 => 'otro',           // felipe
             ];
             
