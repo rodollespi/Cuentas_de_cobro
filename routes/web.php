@@ -125,7 +125,7 @@ Route::middleware(['check.role:contratista'])->group(function () {
     ]);
 
     // RUTAS ESPECÍFICAS PARA VER Y EDITAR (por si el resource falla)
-    Route::get('cuentas-cobro/{id}/ver', [CrearCuentaCobroController::class, 'show'])->name('cuentas-cobro.ver');
+    #Route::get('cuentas-cobro/{id}/ver', [CrearCuentaCobroController::class, 'show'])->name('cuentas-cobro.ver');
     Route::get('cuentas-cobro/{id}/editar', [CrearCuentaCobroController::class, 'edit'])->name('cuentas-cobro.editar');
 
     Route::get('cuentas-cobro/{cuentasCobro}/descargar/{tipo}', [CrearCuentaCobroController::class, 'descargarDocumento'])
