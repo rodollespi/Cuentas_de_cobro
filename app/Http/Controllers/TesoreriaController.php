@@ -15,39 +15,43 @@ class TesoreriaController extends Controller
     /**
      * Dashboard principal de Tesorería
      */
-    public function index()
+ public function index()
     {
-        // Estadísticas para el dashboard
+        // Estadísticas para el dashboard - ACTUALIZADO
         $stats = [
             'pendientes' => CrearCuentaCobro::where('estado', 'aprobado')->count(),
             'pagados_hoy' => Pago::whereDate('fecha_pago', today())->count(),
             'total_pagados_hoy' => Pago::whereDate('fecha_pago', today())->sum('monto'),
-            'total_por_pagar' => CrearCuentaCobro::where('estado', 'aprobado')->sum('total'),
+            'total_por_pagar' => CrearCuentaCobro::where('estado', 'aprobado
+            ')->sum('total'),
             'pagos_mes' => Pago::whereMonth('fecha_pago', now()->month)->count(),
             'monto_mes' => Pago::whereMonth('fecha_pago', now()->month)->sum('monto'),
         ];
 
+        // Cuentas recientes aprobadas por supervisor
+        $cuentasRecientes = CrearCuentaCobro::where('estado', 'aprobado')
+            ->with('user')
+            ->latest()
+            ->take(5)
+            ->get();
+
         return view('tesoreria.dashboard', [
             'stats' => $stats,
+            'cuentasRecientes' => $cuentasRecientes,
             'user' => auth()->user(),
             'userRole' => auth()->user()->role?->name
         ]);
     }
 
     /**
-     * Lista de cuentas de cobro aprobadas
+     * Lista de cuentas de cobro para revisión (aprobadas por supervisor)
      */
     public function cuentasCobro(Request $request)
     {
-        $query = CrearCuentaCobro::with('user', 'supervisor');
+        $query = CrearCuentaCobro::with('user', 'supervisor')
+            ->where('estado', 'aprobado'); // Solo cuentas aprobadas por supervisor
 
         // Filtros
-        if ($request->has('estado')) {
-            $query->where('estado', $request->estado);
-        } else {
-            $query->where('estado', 'aprobado');
-        }
-
         if ($request->has('periodo')) {
             $query->where('periodo', 'like', '%' . $request->periodo . '%');
         }
@@ -62,61 +66,109 @@ class TesoreriaController extends Controller
     }
 
     /**
-     * Ver detalle de cuenta de cobro
+     * Ver detalle de cuenta de cobro para revisión
      */
     public function verCuentaCobro($id)
     {
         $cuentaCobro = CrearCuentaCobro::with('user', 'supervisor', 'pagos')
+            ->where('estado', 'aprobado') // Solo puede ver cuentas aprobadas por supervisor
             ->findOrFail($id);
 
         return view('tesoreria.cuentas-cobro.show', compact('cuentaCobro'));
     }
 
     /**
-     * Generar cheque
+     * Aprobar cuenta desde Tesorería
      */
-    public function generarCheque(Request $request)
-    {
-        $request->validate([
-            'cuenta_cobro_id' => 'required|exists:crear_cuenta_cobros,id',
-            'numero_cheque' => 'required|string|unique:pagos,referencia',
-            'fecha_emision' => 'required|date',
-            'banco_emisor' => 'required|string',
-            'observaciones' => 'nullable|string',
+/**
+ * Aprobar cuenta desde Tesorería
+ */
+public function aprobarCuenta(Request $request, $id)
+{
+    $request->validate([
+        'observaciones' => 'nullable|string|max:500'
+    ]);
+
+    $cuentaCobro = CrearCuentaCobro::whereIn('estado', ['aprobado', 'aprobado_supervisor'])
+        ->findOrFail($id);
+
+    $cuentaCobro->aprobarPorTesoreria(Auth::id(), $request->observaciones);
+
+    return redirect()
+        ->route('tesoreria.cuentas-cobro.index')
+        ->with('success', 'Cuenta aprobada exitosamente. Ahora puede proceder con el pago.');
+}
+
+/**
+ * Rechazar cuenta desde Tesorería
+ */
+public function rechazarCuenta(Request $request, $id)
+{
+    $request->validate([
+        'observaciones' => 'required|string|max:500'
+    ]);
+
+    $cuentaCobro = CrearCuentaCobro::whereIn('estado', ['aprobado', 'aprobado_supervisor'])
+        ->findOrFail($id);
+
+    $cuentaCobro->rechazarPorTesoreria(Auth::id(), $request->observaciones);
+
+    return redirect()
+        ->route('tesoreria.cuentas-cobro.index')
+        ->with('success', 'Cuenta rechazada exitosamente.');
+}
+
+    // ... (mantén todos tus otros métodos existentes: generarCheque, procesarTransferencia, etc.)
+
+    /**
+     * Generar cheque - ACTUALIZADO para verificar estado
+     */
+/**
+ * Generar cheque - ACTUALIZADO para verificar estado
+ */
+public function generarCheque(Request $request)
+{
+    $request->validate([
+        'cuenta_cobro_id' => 'required|exists:crear_cuenta_cobros,id',
+        'numero_cheque' => 'required|string|unique:pagos,referencia',
+        'fecha_emision' => 'required|date',
+        'banco_emisor' => 'required|string',
+        'observaciones' => 'nullable|string',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        $cuentaCobro = CrearCuentaCobro::whereIn('estado', ['aprobado_tesoreria', 'aprobado']) // Solo cuentas aprobadas por tesorería
+            ->findOrFail($request->cuenta_cobro_id);
+
+        $pago = Pago::create([
+            'cuenta_cobro_id' => $cuentaCobro->id,
+            'metodo_pago' => 'cheque',
+            'referencia' => $request->numero_cheque,
+            'fecha_pago' => $request->fecha_emision,
+            'monto' => $cuentaCobro->total,
+            'banco_emisor' => $request->banco_emisor,
+            'observaciones' => $request->observaciones,
+            'estado' => 'procesado',
+            'procesado_por' => Auth::id(),
         ]);
 
-        DB::beginTransaction();
-        try {
-            $cuentaCobro = CrearCuentaCobro::findOrFail($request->cuenta_cobro_id);
+        $cuentaCobro->update([
+            'estado' => 'finalizado',
+            'fecha_pago' => now(),
+        ]);
 
-            $pago = Pago::create([
-                'cuenta_cobro_id' => $cuentaCobro->id,
-                'metodo_pago' => 'cheque',
-                'referencia' => $request->numero_cheque,
-                'fecha_pago' => $request->fecha_emision,
-                'monto' => $cuentaCobro->total,
-                'banco_emisor' => $request->banco_emisor,
-                'observaciones' => $request->observaciones,
-                'estado' => 'procesado',
-                'procesado_por' => Auth::id(),
-            ]);
+        DB::commit();
 
-            $cuentaCobro->update([
-                'estado' => 'finalizado',
-                'fecha_pago' => now(),
-            ]);
+        return redirect()
+            ->route('tesoreria.cuentas-cobro.index')
+            ->with('success', 'Cheque generado exitosamente. Número: ' . $request->numero_cheque);
 
-            DB::commit();
-
-            return redirect()
-                ->route('tesoreria.cuentas-cobro.index')
-                ->with('success', 'Cheque generado exitosamente. Número: ' . $request->numero_cheque);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Error al generar el cheque: ' . $e->getMessage());
-        }
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->with('error', 'Error al generar el cheque: ' . $e->getMessage());
     }
+}
 
     /**
      * Procesar transferencia bancaria

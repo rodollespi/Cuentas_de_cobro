@@ -184,7 +184,6 @@ Route::prefix('tesoreria')
     ->group(function () {
         
         // Listado de contratistas aprobados
-
         Route::get('/contratistas-aprobados', [TesoreriaController::class, 'contratistasAprobados'])
             ->name('contratistas.aprobados');
             
@@ -192,7 +191,7 @@ Route::prefix('tesoreria')
         Route::get('/dashboard', [TesoreriaController::class, 'index'])
             ->name('dashboard');
 
-        // Listado de cuentas aprobadas
+        // Listado de cuentas aprobadas por supervisor
         Route::get('/cuentas-cobro', [TesoreriaController::class, 'cuentasCobro'])
             ->name('cuentas-cobro.index');
 
@@ -200,15 +199,22 @@ Route::prefix('tesoreria')
         Route::get('/cuentas-cobro/{id}', [TesoreriaController::class, 'verCuentaCobro'])
             ->name('cuentas-cobro.show');
 
-        // Generar cheque
+        // NUEVAS RUTAS: Aprobar/Rechazar cuentas desde Tesorería
+        Route::post('/cuentas-cobro/{id}/aprobar', [TesoreriaController::class, 'aprobarCuenta'])
+            ->name('cuentas-cobro.aprobar');
+            
+        Route::post('/cuentas-cobro/{id}/rechazar', [TesoreriaController::class, 'rechazarCuenta'])
+            ->name('cuentas-cobro.rechazar');
+
+        // Generar cheque (solo para cuentas aprobadas por tesorería)
         Route::post('/cuentas-cobro/generar-cheque', [TesoreriaController::class, 'generarCheque'])
             ->name('cuentas-cobro.generar-cheque');
 
-        // Procesar transferencia
+        // Procesar transferencia (solo para cuentas aprobadas por tesorería)
         Route::post('/cuentas-cobro/procesar-transferencia', [TesoreriaController::class, 'procesarTransferencia'])
             ->name('cuentas-cobro.procesar-transferencia');
 
-        // Confirmar pago
+        // Confirmar pago (solo para cuentas aprobadas por tesorería)
         Route::post('/cuentas-cobro/confirmar-pago', [TesoreriaController::class, 'confirmarPago'])
             ->name('cuentas-cobro.confirmar-pago');
 
@@ -231,6 +237,10 @@ Route::prefix('tesoreria')
         // Descargar comprobante
         Route::get('/comprobante/{id}/descargar', [TesoreriaController::class, 'descargarComprobante'])
             ->name('comprobante.descargar');
+
+        // Ver documento de contratista
+        Route::get('/documento/{id}', [TesoreriaController::class, 'verDocumento'])
+            ->name('documento.ver');
     });
 
     
