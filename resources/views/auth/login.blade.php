@@ -12,13 +12,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        :root {
+            --primary-color: #1e4a82;
+            --secondary-color: #2c6bb3;
+            --accent-color: #f8b739;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e4a82 0%, #2c6bb3 100%), 
+            url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='40' cy='40' r='8'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.4s, color 0.4s;
         }
         
         .login-container {
@@ -35,7 +48,7 @@
         }
         
         .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             padding: 40px 30px;
             text-align: center;
             color: white;
@@ -55,7 +68,7 @@
         
         .login-header .icon i {
             font-size: 2.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -87,7 +100,7 @@
         }
         
         .form-label i {
-            color: #667eea;
+            color: var(--primary-color);
             font-size: 0.9rem;
         }
         
@@ -100,23 +113,23 @@
         }
         
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(30, 74, 130, 0.15);
         }
         
         .form-control.is-invalid {
-            border-color: #dc3545;
+            border-color: var(--danger-color);
         }
         
         .form-check-input:checked {
-            background-color: #667eea;
-            border-color: #667eea;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
         }
         
         .btn-login {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             border: none;
             border-radius: 10px;
             color: white;
@@ -127,7 +140,7 @@
         
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 25px rgba(30, 74, 130, 0.4);
         }
         
         .btn-login:active {
@@ -164,14 +177,14 @@
         }
         
         .register-link a {
-            color: #667eea;
+            color: var(--primary-color);
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s;
         }
         
         .register-link a:hover {
-            color: #764ba2;
+            color: var(--secondary-color);
         }
         
         .alert {
@@ -179,6 +192,16 @@
             border: none;
             padding: 12px 15px;
             margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            border-left: 4px solid var(--success-color);
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        }
+        
+        .alert-danger {
+            border-left: 4px solid var(--danger-color);
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
         }
         
         .invalid-feedback {
@@ -198,6 +221,11 @@
             .login-body {
                 padding: 30px 20px;
             }
+        }
+        
+        /* Efectos de scroll suave */
+        html {
+            scroll-behavior: smooth;
         }
     </style>
 </head>

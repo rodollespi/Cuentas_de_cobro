@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'CuentasCobro')</title>
+    <title>@yield('title', 'Sistema de Cuentas de Cobro - Alcaldías')</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,17 +13,29 @@
     
     @stack('styles')
     
-        <!-- Estilos dinámicos según el tema -->
+    <!-- Estilos dinámicos según el tema -->
     <style>
+        :root {
+            --primary-color: #1e4a82;
+            --secondary-color: #2c6bb3;
+            --accent-color: #f8b739;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
         body {
             @if(session('tema') === 'oscuro')
                 background-color: #1a1a2e;
                 color: #f1f1f1;
             @else
-                background-color: #f8f9fc;
-                color: #333;
+                background: linear-gradient(135deg, #f8f9fc 0%, #e9ecef 100%);
+                color: #2c3e50;
             @endif
             transition: background-color 0.4s, color 0.4s;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
         }
 
         .card {
@@ -32,8 +44,11 @@
                 color: #f1f1f1;
                 border-color: #444;
             @else
-                background-color: #fff;
-                color: #333;
+                background: white;
+                color: #2c3e50;
+                border: none;
+                box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+                border-radius: 12px;
             @endif
         }
 
@@ -41,9 +56,9 @@
             @if(session('tema') === 'oscuro')
                 background: linear-gradient(135deg, #232526 0%, #414345 100%);
             @else
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+                box-shadow: 0 4px 20px rgba(30, 74, 130, 0.3);
             @endif
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
         }
 
         footer {
@@ -51,91 +66,165 @@
                 background-color: #111;
                 color: #ccc;
             @else
-                background-color: #f8f9fc;
-                color: #555;
+                background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+                color: white;
             @endif
         }
-    </style>
 
-    <style>
-        :root {
-            --sidebar-width: 250px;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fc;
-        }
-        
-        .navbar-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        
         .navbar-custom .navbar-brand {
             color: white;
-            font-weight: 600;
-            font-size: 1.3rem;
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: 0.5px;
         }
         
         .navbar-custom .nav-link {
-            color: rgba(255,255,255,0.9);
-            transition: all 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
+            color: rgba(255,255,255,0.95);
+            transition: all 0.3s ease;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            margin: 0 2px;
         }
         
         .navbar-custom .nav-link:hover {
             color: white;
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(255,255,255,0.15);
+            transform: translateY(-1px);
+        }
+        
+        .navbar-custom .nav-link.active {
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+            font-weight: 600;
         }
         
         .navbar-custom .dropdown-menu {
             border: none;
-            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            padding: 0.5rem;
+        }
+        
+        .dropdown-item {
+            border-radius: 8px;
+            margin: 2px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
         }
         
         .user-info {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
         
         .user-avatar {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: white;
+            background: linear-gradient(135deg, var(--accent-color), #ff9d00);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            color: #667eea;
+            font-weight: 700;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
         }
         
         .main-content {
-            min-height: calc(100vh - 56px);
+            min-height: calc(100vh - 76px);
             padding-top: 2rem;
         }
         
-        .dropdown-toggle::after {
-            vertical-align: middle;
+        .badge-gov {
+            background: linear-gradient(135deg, var(--accent-color), #ff9d00);
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 74, 130, 0.4);
+        }
+        
+        .alert {
+            border: none;
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+        
+        .alert-success {
+            border-left-color: var(--success-color);
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        }
+        
+        .alert-danger {
+            border-left-color: var(--danger-color);
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        }
+        
+        .footer-content {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+        
+        .nav-divider {
+            border-left: 1px solid rgba(255,255,255,0.3);
+            height: 30px;
+            margin: 0 1rem;
         }
         
         @media (max-width: 768px) {
             .navbar-custom .navbar-brand {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
             }
+            
+            .nav-divider {
+                display: none;
+            }
+        }
+        
+        /* Efectos de scroll suave */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Mejoras visuales para elementos de formulario */
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(30, 74, 130, 0.25);
         }
     </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top py-2">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <i class="fas fa-receipt me-2"></i>
-                CuentasCobro
+                <i class="fas fa-landmark me-2"></i>
+                Sistema de Cuentas de Cobro
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -144,16 +233,12 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-
-                    </li>
-                    
                     @auth
                         @if(auth()->user()->role && auth()->user()->role->name === 'alcalde')
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-users-cog me-1"></i>
-                                Administración
+                                <i class="fas fa-crown me-1"></i>
+                                Administración Municipal
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
@@ -164,63 +249,62 @@
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="#">
-                                        <i class="fas fa-users me-2"></i>
-                                        Usuarios
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-cog me-2"></i>
-                                        Configuración
+                                        <i class="fas fa-chart-bar me-2"></i>
+                                        Reportes Municipales
                                     </a>
                                 </li>
                             </ul>
                         </li>
                         @endif
                         
-                     @if(auth()->user()->role)
-    @if(auth()->user()->role && auth()->user()->role->name === 'ordenador_gasto')
-   <li class="nav-item">
-    <a class="nav-link" href="{{ route('ordenador.dashboard') }}">
-        <i class="fas fa-file-invoice me-1"></i>
-        Cuentas de Cobro
-        @if(isset($cuentasPendientes) && $cuentasPendientes > 0)
-            <span class="badge bg-danger ms-1">{{ $cuentasPendientes }}</span>
-        @endif
-    </a>
-</li>
-
-    @elseif(auth()->user()->role->name === 'contratista')
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('cuentas-cobro.index') }}">
-                <i class="fas fa-file-invoice me-1"></i>
-                Mis Cuentas
-            </a>
-        </li>
-    @elseif(auth()->user()->role->name === 'supervisor')
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('supervisor.dashboard') }}">
-                <i class="fas fa-clipboard-check me-1"></i>
-                Panel Supervisor
-            </a>
-        </li>
-    @elseif(auth()->user()->role->name === 'alcalde')
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('alcalde.dashboard') }}">
-                <i class="fas fa-user-tie me-1"></i>
-                Panel Alcalde
-            </a>
-        </li>
-    @endif
-@endif
-
+                        @if(auth()->user()->role)
+                            @if(auth()->user()->role->name === 'ordenador_gasto')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('ordenador.dashboard') }}">
+                                    <i class="fas fa-file-invoice-dollar me-1"></i>
+                                    Cuentas de Cobro
+                                    @if(isset($cuentasPendientes) && $cuentasPendientes > 0)
+                                        <span class="badge badge-gov ms-1">{{ $cuentasPendientes }}</span>
+                                    @endif
+                                </a>
+                            </li>
+                            @elseif(auth()->user()->role->name === 'contratista')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('cuentas-cobro.index') }}">
+                                    <i class="fas fa-file-contract me-1"></i>
+                                    Mis Cuentas
+                                </a>
+                            </li>
+                            @elseif(auth()->user()->role->name === 'supervisor')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('supervisor.dashboard') }}">
+                                    <i class="fas fa-clipboard-check me-1"></i>
+                                    Revisión de Cuentas
+                                </a>
+                            </li>
+                            @elseif(auth()->user()->role->name === 'alcalde')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('alcalde.dashboard') }}">
+                                    <i class="fas fa-user-tie me-1"></i>
+                                    Panel Alcaldía
+                                </a>
+                            </li>
+                            @elseif(auth()->user()->role->name === 'tesoreria')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('tesoreria.dashboard') }}">
+                                    <i class="fas fa-coins me-1"></i>
+                                    Gestión de Pagos
+                                </a>
+                            </li>
+                            @endif
+                        @endif
                     @endauth
                 </ul>
                 
                 <!-- User Menu -->
                 <ul class="navbar-nav ms-auto">
                     @auth
+                    <div class="nav-divider d-none d-lg-block"></div>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <div class="user-info">
@@ -232,35 +316,35 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <div class="dropdown-header">
+                                <div class="dropdown-header px-3 py-2">
                                     <strong>{{ auth()->user()->name }}</strong>
                                     <br>
                                     <small class="text-muted">{{ auth()->user()->email }}</small>
                                     @if(auth()->user()->role)
                                     <br>
-                                    <span class="badge bg-primary mt-1">
+                                    <span class="badge badge-gov mt-1">
+                                        <i class="fas fa-user-tag me-1"></i>
                                         {{ ucfirst(str_replace('_', ' ', auth()->user()->role->name)) }}
                                     </span>
                                     @endif
                                 </div>
                             </li>
-                            <li><hr class="dropdown-divider"></li>
-                           <li>
-                              <a class="dropdown-item" href="{{ route('perfil.index') }}">
-                            <i class="fas fa-user me-2"></i>
-                            Mi Perfil
-                              </a>
-                            </li>
-                              <li>
-                               <a class="dropdown-item" href="{{ route('configuracion.index') }}">
-                              <i class="fas fa-cog me-2"></i>
-                             Configuración
-                              </a>
-</li>
-
-                            <li><hr class="dropdown-divider"></li>
+                            <li><hr class="dropdown-divider mx-3"></li>
                             <li>
-                                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                <a class="dropdown-item" href="{{ route('perfil.index') }}">
+                                    <i class="fas fa-user-circle me-2"></i>
+                                    Mi Perfil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('configuracion.index') }}">
+                                    <i class="fas fa-cogs me-2"></i>
+                                    Configuración
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider mx-3"></li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST" class="d-inline w-100">
                                     @csrf
                                     <button type="submit" class="dropdown-item text-danger">
                                         <i class="fas fa-sign-out-alt me-2"></i>
@@ -322,16 +406,29 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-4 mt-5 bg-light">
+    <footer class="py-4 mt-5">
         <div class="container-fluid px-4">
-            <div class="d-flex align-items-center justify-content-between small">
-                <div class="text-muted">
-                    Copyright &copy; CuentasCobro {{ date('Y') }}
-                </div>
-                <div>
-                    <a href="#" class="text-muted text-decoration-none">Privacidad</a>
-                    &middot;
-                    <a href="#" class="text-muted text-decoration-none">Términos</a>
+            <div class="footer-content">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-landmark me-2 fa-lg"></i>
+                            <strong>Sistema de Cuentas de Cobro Municipal</strong>
+                        </div>
+                        <small class="d-block mt-1 opacity-75">
+                            Plataforma oficial para la gestión de cuentas de cobro de la administración municipal
+                        </small>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="small">
+                            <span class="opacity-75">Copyright &copy; {{ date('Y') }} - Alcaldía Municipal</span>
+                            <div class="mt-1">
+                                <a href="#" class="text-white text-decoration-none opacity-75 me-3">Políticas</a>
+                                <a href="#" class="text-white text-decoration-none opacity-75 me-3">Términos</a>
+                                <a href="#" class="text-white text-decoration-none opacity-75">Soporte</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -351,6 +448,14 @@
                     const bsAlert = new bootstrap.Alert(alert);
                     bsAlert.close();
                 }, 5000);
+            });
+            
+            // Agregar clase active al enlace actual
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
             });
         });
     </script>

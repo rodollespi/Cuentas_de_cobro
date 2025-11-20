@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,        // Primero los roles
             AdminUserSeeder::class,   // Luego el usuario administrador
-            UserSeeder::class,        // Luego los usuarios de prueba
             CuentasCobroSeeder::class, // Finalmente las cuentas de cobro
             
         ]);

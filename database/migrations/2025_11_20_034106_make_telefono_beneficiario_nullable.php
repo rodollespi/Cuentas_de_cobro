@@ -6,23 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::table('crear_cuenta_cobros', function (Blueprint $table) {
-            $table->string('telefono_beneficiario')->nullable(false)->change();
+            $table->string('telefono_beneficiario', 20)->nullable()->change();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::table('crear_cuenta_cobros', function (Blueprint $table) {
-            $table->string('telefono_beneficiario')->nullable()->change();
+            $table->string('telefono_beneficiario', 20)->nullable(false)->change();
         });
     }
 };
