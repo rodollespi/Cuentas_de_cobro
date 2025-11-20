@@ -26,6 +26,10 @@
             transform: translateY(-5px); 
             box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.3); 
         }
+        .btn-outline-light {
+        --bs-btn-color: #0a58ca;
+        --bs-btn-border-color: #000;
+        }
         .icon-circle { 
             width: 48px; height: 48px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
@@ -63,12 +67,6 @@
                     <a class="nav-link" href="{{ route('tesoreria.historial') }}">
                         <i class="fas fa-history me-1"></i>
                         Historial de Pagos
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('tesoreria.reportes') }}">
-                        <i class="fas fa-chart-line me-1"></i>
-                        Reportes
                     </a>
                 </li>
 
