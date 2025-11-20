@@ -155,7 +155,7 @@ public function index()
     /**
      * Update the specified resource in storage.
      */
-   public function update(Request $request, $id)
+public function update(Request $request, $id)
 {
     \Log::info('=== ACTUALIZANDO CUENTA DE COBRO ===');
     \Log::info('ID: ' . $id);

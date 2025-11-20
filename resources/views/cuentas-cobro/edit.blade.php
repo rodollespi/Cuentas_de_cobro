@@ -307,7 +307,7 @@
                     </h3>
 
                     <div id="items-container">
-                        @php
+        @php
             // CORREGIR ESTA PARTE:
             $items = $cuentaCobro->detalle_items ?? [];
             if (empty($items) || !is_array($items)) {
@@ -318,7 +318,7 @@
             if (is_string($items)) {
                 $items = json_decode($items, true) ?? [];
             }
-                        @endphp
+        @endphp
 
                         @foreach($items as $index => $item)
                         <div class="item-row border p-3 mb-3 rounded">
