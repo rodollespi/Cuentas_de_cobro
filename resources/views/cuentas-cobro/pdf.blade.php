@@ -169,7 +169,7 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="4" class="text-center">No hay items registrados</td>
+                        <td colspan="4" class="text-center">No se encontraron items registrados</td>
                     </tr>
                 @endif
             </tbody>
