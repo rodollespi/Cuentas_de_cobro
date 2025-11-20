@@ -23,7 +23,6 @@ class AdminUserSeeder extends Seeder
             return;
         }
 
-        // Definir usuarios para cada rol - CON LOS DATOS QUE ME MOSTRASTE
         $usersData = [
             'alcalde' => [
                 'name' => 'Daniel Ramirez',
