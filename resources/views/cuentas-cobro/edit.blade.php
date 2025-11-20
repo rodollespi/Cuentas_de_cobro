@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Editar Cuenta de Cobro - CuentasCobro')
+@section('title', 'Mis Cuentas de Cobro - CuentasCobro')
 
 @section('content')
 <div class="container-fluid">
@@ -10,314 +10,568 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 mb-0 text-gray-800">
-                        <i class="fas fa-edit me-2"></i>
-                        Editar Cuenta de Cobro #{{ $cuentaCobro->id }}
+                        <i class="fas fa-file-invoice-dollar me-2"></i>
+                        Mis Cuentas de Cobro
                     </h1>
-                    <p class="text-muted mb-0">
-                        <span class="badge bg-warning text-dark">
-                            {{ $cuentaCobro->estado ?? 'Pendiente' }}
-                        </span>
-                    </p>
+                    <p class="text-muted mb-0">Gestiona y revisa el estado de tus cuentas de cobro</p>
                 </div>
                 <div>
-                    <a href="{{ route('cuentas-cobro.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>
-                        Volver al Listado
+                    <a href="{{ route('cuentas-cobro.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>
+                        Nueva Cuenta de Cobro
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Formulario -->
-    <div class="row">
-        <div class="col-lg-10 mx-auto">
-            <div class="card shadow">
+    <!-- Resumen Estadístico -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <form action="{{ route('cuentas-cobro.update', $cuentaCobro->id) }}" method="POST" id="cuentaCobroForm">
-                        @csrf
-                        @method('PUT')
-
-                        <!-- Información de la Alcaldía -->
-                        <div class="mb-4">
-                            <h5 class="border-bottom pb-2 mb-3">
-                                <i class="fas fa-building text-primary me-2"></i>
-                                Información de la Alcaldía
-                            </h5>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="nombreAlcaldia" class="form-label">
-                                        Nombre de la Alcaldía <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="nombreAlcaldia" 
-                                           name="nombreAlcaldia" 
-                                           value="{{ old('nombreAlcaldia', $cuentaCobro->nombre_alcaldia) }}"
-                                           required>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="nitAlcaldia" class="form-label">
-                                        NIT Alcaldía <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="nitAlcaldia" 
-                                           name="nitAlcaldia" 
-                                           value="{{ old('nitAlcaldia', $cuentaCobro->nit_alcaldia) }}"
-                                           required>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="direccionAlcaldia" class="form-label">
-                                        Dirección <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="direccionAlcaldia" 
-                                           name="direccionAlcaldia" 
-                                           value="{{ old('direccionAlcaldia', $cuentaCobro->direccion_alcaldia) }}"
-                                           required>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="telefonoAlcaldia" class="form-label">
-                                        Teléfono <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="telefonoAlcaldia" 
-                                           name="telefonoAlcaldia" 
-                                           value="{{ old('telefonoAlcaldia', $cuentaCobro->telefono_alcaldia) }}"
-                                           required>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="ciudadAlcaldia" class="form-label">
-                                        Ciudad <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="ciudadAlcaldia" 
-                                           name="ciudadAlcaldia" 
-                                           value="{{ old('ciudadAlcaldia', $cuentaCobro->ciudad_alcaldia) }}"
-                                           required>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="fechaEmision" class="form-label">
-                                        Fecha de Emisión <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="date" 
-                                           class="form-control" 
-                                           id="fechaEmision" 
-                                           name="fechaEmision" 
-                                           value="{{ old('fechaEmision', \Carbon\Carbon::parse($cuentaCobro->fecha_emision)->format('Y-m-d')) }}"
-                                           required>
-                                </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Pendientes
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $cuentasPendientes->count() }}
                             </div>
                         </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                        <!-- Concepto y Detalle -->
-                        <div class="mb-4">
-                            <h5 class="border-bottom pb-2 mb-3">
-                                <i class="fas fa-file-alt text-primary me-2"></i>
-                                Concepto y Detalle
-                            </h5>
-
-                            <div class="mb-3">
-                                <label for="concepto" class="form-label">Concepto <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="concepto" name="concepto" rows="4" required>{{ old('concepto', $cuentaCobro->concepto) }}</textarea>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Aprobadas
                             </div>
-
-                            <!-- Items Detallados -->
-                            <div class="mb-4">
-                                <h6 class="border-bottom pb-2 mb-3">
-                                    <i class="fas fa-list text-primary me-2"></i>
-                                    Detalle de Items
-                                </h6>
-
-                                @php
-                                    $items = is_array($cuentaCobro->detalle_items)
-                                        ? $cuentaCobro->detalle_items
-                                        : (json_decode($cuentaCobro->detalle_items, true) ?? []);
-                                @endphp
-
-                                <div id="items-container">
-                                    @php
-                                        if (is_array($cuentaCobro->detalle_items)) {
-                                            $items = $cuentaCobro->detalle_items;
-                                        } elseif (is_string($cuentaCobro->detalle_items)) {
-                                            $items = json_decode($cuentaCobro->detalle_items, true) ?? [];
-                                        } else {
-                                            $items = [];
-                                        }
-                                    @endphp
-                                    @if(!empty($items) && count($items) > 0)
-                                        @foreach($items as $index => $item)
-                                        <div class="item-row mb-3 p-3 border rounded">
-                                            <div class="row">
-                                                <div class="col-md-5 mb-2">
-                                                    <label class="form-label">Descripción</label>
-                                                    <input type="text" 
-                                                           class="form-control descripcion" 
-                                                           name="descripcion[]" 
-                                                           value="{{ $item['descripcion'] ?? '' }}"
-                                                           placeholder="Descripción del item">
-                                                </div>
-                                                <div class="col-md-2 mb-2">
-                                                    <label class="form-label">Cantidad</label>
-                                                    <input type="number" 
-                                                           class="form-control cantidad" 
-                                                           name="cantidad[]" 
-                                                           value="{{ $item['cantidad'] ?? 1 }}" 
-                                                           min="1"
-                                                           step="1">
-                                                </div>
-                                                <div class="col-md-2 mb-2">
-                                                    <label class="form-label">Valor Unitario</label>
-                                                    <input type="number" 
-                                                           class="form-control valor-unitario" 
-                                                           name="valorUnitario[]" 
-                                                           value="{{ $item['valor_unitario'] ?? 0 }}" 
-                                                           min="0"
-                                                           step="0.01">
-                                                </div>
-                                                <div class="col-md-2 mb-2">
-                                                    <label class="form-label">Valor Total</label>
-                                                    <input type="number" 
-                                                           class="form-control valor-total" 
-                                                           name="valorTotal[]" 
-                                                           value="{{ $item['valor_total'] ?? 0 }}" 
-                                                           readonly>
-                                                </div>
-                                                <div class="col-md-1 mb-2 d-flex align-items-end">
-                                                    <button type="button" class="btn btn-danger btn-sm remove-item" {{ $loop->first ? 'disabled' : '' }}>
-                                                        <i class="fas fa-times"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    @else
-                                        <div class="item-row mb-3 p-3 border rounded">
-                                            <div class="row">
-                                                <div class="col-md-5 mb-2">
-                                                    <label class="form-label">Descripción</label>
-                                                    <input type="text" class="form-control descripcion" name="descripcion[]" value="">
-                                                </div>
-                                                <div class="col-md-2 mb-2">
-                                                    <label class="form-label">Cantidad</label>
-                                                    <input type="number" class="form-control cantidad" name="cantidad[]" value="1">
-                                                </div>
-                                                <div class="col-md-2 mb-2">
-                                                    <label class="form-label">Valor Unitario</label>
-                                                    <input type="number" class="form-control valor-unitario" name="valorUnitario[]" value="0">
-                                                </div>
-                                                <div class="col-md-2 mb-2">
-                                                    <label class="form-label">Valor Total</label>
-                                                    <input type="number" class="form-control valor-total" name="valorTotal[]" value="0" readonly>
-                                                </div>
-                                                <div class="col-md-1 mb-2 d-flex align-items-end">
-                                                    <button type="button" class="btn btn-danger btn-sm remove-item" disabled>
-                                                        <i class="fas fa-times"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <button type="button" class="btn btn-outline-primary btn-sm" id="add-item">
-                                    <i class="fas fa-plus me-1"></i> Agregar Item
-                                </button>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $cuentasAprobadas->count() }}
                             </div>
                         </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                        <!-- Botones -->
-                        <div class="d-flex justify-content-between pt-3 border-top">
-                            <a href="{{ route('cuentas-cobro.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-times me-2"></i> Cancelar
-                            </a>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save me-2"></i> Actualizar
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Rechazadas
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $cuentasRechazadas->count() }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total Aprobado
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                ${{ number_format($estadisticas['total_aprobado'], 2) }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row mb-4">
+        <!-- Gráfico de Estados -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Distribución por Estado
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="estadoPieChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Ingresos por Mes -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Ingresos por Mes (Aprobados)
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="ingresosLineChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pestañas de Estados -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <ul class="nav nav-pills card-header-pills" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pendientes-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#pendientes" type="button" role="tab" 
+                                    aria-controls="pendientes" aria-selected="true">
+                                <i class="fas fa-clock me-2"></i>
+                                Pendientes
+                                <span class="badge bg-warning ms-2">{{ $cuentasPendientes->count() }}</span>
                             </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="aprobadas-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#aprobadas" type="button" role="tab" 
+                                    aria-controls="aprobadas" aria-selected="false">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Aprobadas
+                                <span class="badge bg-success ms-2">{{ $cuentasAprobadas->count() }}</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="rechazadas-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#rechazadas" type="button" role="tab" 
+                                    aria-controls="rechazadas" aria-selected="false">
+                                <i class="fas fa-times-circle me-2"></i>
+                                Rechazadas
+                                <span class="badge bg-danger ms-2">{{ $cuentasRechazadas->count() }}</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="finalizadas-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#finalizadas" type="button" role="tab" 
+                                    aria-controls="finalizadas" aria-selected="false">
+                                <i class="fas fa-flag-checkered me-2"></i>
+                                Finalizadas
+                                <span class="badge bg-info ms-2">{{ $cuentasFinalizadas->count() }}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="myTabContent">
+                        
+                        <!-- Pestaña Pendientes -->
+                        <div class="tab-pane fade show active" id="pendientes" role="tabpanel" 
+                             aria-labelledby="pendientes-tab">
+                            @if($cuentasPendientes->count() > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Beneficiario</th>
+                                                <th>Concepto</th>
+                                                <th>Período</th>
+                                                <th>Total</th>
+                                                <th>Fecha</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($cuentasPendientes as $cuenta)
+                                            <tr>
+                                                <td>#{{ $cuenta->id }}</td>
+                                                <td>{{ $cuenta->nombre_beneficiario }}</td>
+                                                <td>{{ Str::limit($cuenta->concepto, 50) }}</td>
+                                                <td>{{ $cuenta->periodo }}</td>
+                                                <td>${{ number_format($cuenta->total, 2) }}</td>
+                                                <td>{{ $cuenta->created_at->format('d/m/Y') }}</td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a href="{{ route('cuentas-cobro.show', $cuenta->id) }}" 
+                                                           class="btn btn-info" title="Ver">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <a href="{{ route('cuentas-cobro.edit', $cuenta->id) }}" 
+                                                           class="btn btn-warning" title="Editar">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <form action="{{ route('cuentas-cobro.destroy', $cuenta->id) }}" 
+                                                              method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger" 
+                                                                    title="Eliminar"
+                                                                    onclick="return confirm('¿Estás seguro de eliminar esta cuenta de cobro?')">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="text-center py-4">
+                                    <i class="fas fa-clock fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No hay cuentas pendientes</h5>
+                                    <p class="text-muted">Todas tus cuentas han sido procesadas.</p>
+                                </div>
+                            @endif
                         </div>
-                    </form>
+
+                        <!-- Pestaña Aprobadas -->
+                        <div class="tab-pane fade" id="aprobadas" role="tabpanel" 
+                             aria-labelledby="aprobadas-tab">
+                            @if($cuentasAprobadas->count() > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Beneficiario</th>
+                                                <th>Concepto</th>
+                                                <th>Período</th>
+                                                <th>Total</th>
+                                                <th>Fecha Aprobación</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($cuentasAprobadas as $cuenta)
+                                            <tr>
+                                                <td>#{{ $cuenta->id }}</td>
+                                                <td>{{ $cuenta->nombre_beneficiario }}</td>
+                                                <td>{{ Str::limit($cuenta->concepto, 50) }}</td>
+                                                <td>{{ $cuenta->periodo }}</td>
+                                                <td>${{ number_format($cuenta->total, 2) }}</td>
+                                                <td>{{ $cuenta->updated_at->format('d/m/Y') }}</td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a href="{{ route('cuentas-cobro.show', $cuenta->id) }}" 
+                                                           class="btn btn-info" title="Ver">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <button class="btn btn-success" title="Descargar PDF"
+                                                                onclick="descargarPDF({{ $cuenta->id }})">
+                                                            <i class="fas fa-download"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="text-center py-4">
+                                    <i class="fas fa-check-circle fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No hay cuentas aprobadas</h5>
+                                    <p class="text-muted">Tus cuentas aprobadas aparecerán aquí.</p>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Pestaña Rechazadas -->
+                        <div class="tab-pane fade" id="rechazadas" role="tabpanel" 
+                             aria-labelledby="rechazadas-tab">
+                            @if($cuentasRechazadas->count() > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Beneficiario</th>
+                                                <th>Concepto</th>
+                                                <th>Período</th>
+                                                <th>Total</th>
+                                                <th>Fecha Rechazo</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($cuentasRechazadas as $cuenta)
+                                            <tr>
+                                                <td>#{{ $cuenta->id }}</td>
+                                                <td>{{ $cuenta->nombre_beneficiario }}</td>
+                                                <td>{{ Str::limit($cuenta->concepto, 50) }}</td>
+                                                <td>{{ $cuenta->periodo }}</td>
+                                                <td>${{ number_format($cuenta->total, 2) }}</td>
+                                                <td>{{ $cuenta->updated_at->format('d/m/Y') }}</td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a href="{{ route('cuentas-cobro.show', $cuenta->id) }}" 
+                                                           class="btn btn-info" title="Ver">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <a href="{{ route('cuentas-cobro.edit', $cuenta->id) }}" 
+                                                           class="btn btn-warning" title="Editar">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <form action="{{ route('cuentas-cobro.destroy', $cuenta->id) }}" 
+                                                              method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger" 
+                                                                    title="Eliminar"
+                                                                    onclick="return confirm('¿Estás seguro de eliminar esta cuenta de cobro?')">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="text-center py-4">
+                                    <i class="fas fa-times-circle fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No hay cuentas rechazadas</h5>
+                                    <p class="text-muted">Tus cuentas rechazadas aparecerán aquí.</p>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Pestaña Finalizadas -->
+                        <div class="tab-pane fade" id="finalizadas" role="tabpanel" 
+                             aria-labelledby="finalizadas-tab">
+                            @if($cuentasFinalizadas->count() > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Beneficiario</th>
+                                                <th>Concepto</th>
+                                                <th>Período</th>
+                                                <th>Total</th>
+                                                <th>Fecha Finalización</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($cuentasFinalizadas as $cuenta)
+                                            <tr>
+                                                <td>#{{ $cuenta->id }}</td>
+                                                <td>{{ $cuenta->nombre_beneficiario }}</td>
+                                                <td>{{ Str::limit($cuenta->concepto, 50) }}</td>
+                                                <td>{{ $cuenta->periodo }}</td>
+                                                <td>${{ number_format($cuenta->total, 2) }}</td>
+                                                <td>{{ $cuenta->updated_at->format('d/m/Y') }}</td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a href="{{ route('cuentas-cobro.show', $cuenta->id) }}" 
+                                                           class="btn btn-info" title="Ver">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <button class="btn btn-success" title="Descargar PDF"
+                                                                onclick="descargarPDF({{ $cuenta->id }})">
+                                                            <i class="fas fa-download"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="text-center py-4">
+                                    <i class="fas fa-flag-checkered fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No hay cuentas finalizadas</h5>
+                                    <p class="text-muted">Tus cuentas finalizadas aparecerán aquí.</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
 
 @push('scripts')
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const itemsContainer = document.getElementById('items-container');
-    const addItemBtn = document.getElementById('add-item');
+// Datos para los gráficos
+const estadisticas = @json($estadisticas);
 
-    addItemBtn.addEventListener('click', () => {
-        const newItem = document.createElement('div');
-        newItem.className = 'item-row mb-3 p-3 border rounded';
-        newItem.innerHTML = `
-            <div class="row">
-                <div class="col-md-5 mb-2">
-                    <label class="form-label">Descripción</label>
-                    <input type="text" class="form-control descripcion" name="descripcion[]">
-                </div>
-                <div class="col-md-2 mb-2">
-                    <label class="form-label">Cantidad</label>
-                    <input type="number" class="form-control cantidad" name="cantidad[]" value="1">
-                </div>
-                <div class="col-md-2 mb-2">
-                    <label class="form-label">Valor Unitario</label>
-                    <input type="number" class="form-control valor-unitario" name="valorUnitario[]" value="0">
-                </div>
-                <div class="col-md-2 mb-2">
-                    <label class="form-label">Valor Total</label>
-                    <input type="number" class="form-control valor-total" name="valorTotal[]" value="0" readonly>
-                </div>
-                <div class="col-md-1 mb-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-danger btn-sm remove-item"><i class="fas fa-times"></i></button>
-                </div>
-            </div>`;
-        itemsContainer.appendChild(newItem);
-        updateRemoveButtons();
-    });
-
-    itemsContainer.addEventListener('click', e => {
-        if (e.target.closest('.remove-item')) {
-            e.target.closest('.item-row').remove();
-            updateRemoveButtons();
+// Gráfico de Pie - Estados
+const ctxPie = document.getElementById('estadoPieChart').getContext('2d');
+const estadoPieChart = new Chart(ctxPie, {
+    type: 'pie',
+    data: {
+        labels: ['Pendientes', 'Aprobadas', 'Rechazadas', 'Finalizadas'],
+        datasets: [{
+            data: [
+                estadisticas.conteo_por_estado.pendiente || 0,
+                estadisticas.conteo_por_estado.aprobado || 0,
+                estadisticas.conteo_por_estado.rechazado || 0,
+                estadisticas.conteo_por_estado.finalizado || 0
+            ],
+            backgroundColor: [
+                '#ffc107', // Amarillo - Pendientes
+                '#28a745', // Verde - Aprobadas
+                '#dc3545', // Rojo - Rechazadas
+                '#17a2b8'  // Azul - Finalizadas
+            ],
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const label = context.label || '';
+                        const value = context.raw || 0;
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = Math.round((value / total) * 100);
+                        return `${label}: ${value} (${percentage}%)`;
+                    }
+                }
+            }
         }
-    });
+    }
+});
 
-    function updateRemoveButtons() {
-        const items = document.querySelectorAll('.item-row');
-        document.querySelectorAll('.remove-item').forEach(btn => {
-            btn.disabled = items.length <= 1;
+// Gráfico de Línea - Ingresos por Mes
+const ctxLine = document.getElementById('ingresosLineChart').getContext('2d');
+const ingresosLineChart = new Chart(ctxLine, {
+    type: 'line',
+    data: {
+        labels: estadisticas.meses,
+        datasets: [{
+            label: 'Ingresos Aprobados',
+            data: estadisticas.totales,
+            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+            borderColor: '#28a745',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return '$' + value.toLocaleString();
+                    }
+                }
+            }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return 'Ingresos: $' + context.parsed.y.toLocaleString();
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Función para descargar PDF (placeholder)
+function descargarPDF(id) {
+    alert('Función de descarga PDF para cuenta #' + id + ' - En desarrollo');
+    // Aquí implementarás la lógica de descarga PDF
+    // window.location.href = '/cuentas-cobro/' + id + '/descargar-pdf';
+}
+
+// Activar pestañas y mantener estado
+document.addEventListener('DOMContentLoaded', function() {
+    const tabEl = document.querySelector('button[data-bs-toggle="tab"]');
+    if (tabEl) {
+        tabEl.addEventListener('shown.bs.tab', function (event) {
+            // Guardar la pestaña activa en localStorage
+            localStorage.setItem('activeTab', event.target.getAttribute('data-bs-target'));
         });
     }
 
-    updateRemoveButtons();
+    // Recuperar pestaña activa
+    const activeTab = localStorage.getItem('activeTab');
+    if (activeTab) {
+        const tab = document.querySelector(`[data-bs-target="${activeTab}"]`);
+        if (tab) {
+            new bootstrap.Tab(tab).show();
+        }
+    }
 });
 </script>
-@endpush
 
-@push('styles')
 <style>
-.item-row {
-    background-color: #f8f9fa;
-    transition: background-color 0.2s;
+.chart-pie, .chart-area {
+    position: relative;
+    height: 300px;
 }
-.item-row:hover {
-    background-color: #e9ecef;
+
+.nav-pills .nav-link {
+    border-radius: 0.375rem;
+    margin-right: 0.5rem;
 }
-.remove-item:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+
+.nav-pills .nav-link.active {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #6e707e;
 }
 </style>
 @endpush
-@endsection
